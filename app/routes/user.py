@@ -28,7 +28,10 @@ def create_user(user: User):
 def get_user(user_id: int = Path(..., title="ID of the user", gt=0, description="User ID between 1 and 1000")):
     try:
         userIndex = lookForUserIndexByUserID(users, user_id)
-        return {"user": users[userIndex]}
+        if userIndex < 0:
+            raise IndexError("User not found")
+        else:
+            return {"user": users[userIndex]}
     except IndexError:
         print(f"Caught an error: {IndexError}")
         raise HTTPException(status_code=404, detail="User not found.")
@@ -41,8 +44,12 @@ def get_user(user_id: int = Path(..., title="ID of the user", gt=0, description=
 def delete_user(user_id: int):
     try:
         userIndex = lookForUserIndexByUserID(users, user_id)
-        removed_user = users.pop(userIndex)
-        return {"message": "User removed", "user": removed_user}
+        print(99999947, userIndex, users[userIndex])
+        if userIndex < 0:
+            raise IndexError("User not found")
+        else:
+            removed_user = users.pop(userIndex)
+            return {"message": "User removed", "user": removed_user}
     except IndexError:
         print(f"Caught an error: {IndexError}")
         raise HTTPException(status_code=404, detail="User not found.")
