@@ -1,6 +1,9 @@
-from fastapi import APIRouter, HTTPException
-from fastapi import Path
+from fastapi import APIRouter, HTTPException, Path, Depends
 from app.types.user import User
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.future import select
+from app.db.database import get_db
+from app.db.models.user import User as UserModel
 
 router = APIRouter()
 users = []
@@ -23,6 +26,13 @@ def create_user(user: User):
 
     return {"message": f"User {user.name} created", "user": user}
 
+# route to retrieve all users
+@router.get("/users")
+async def get_users(db: AsyncSession = Depends(get_db)):
+    result = await db.execute(select(UserModel))
+    users = result.scalars().all()
+    return users
+
 # route to retrieve a user
 @router.get("/users/{user_id}")
 def get_user(user_id: int = Path(..., title="ID of the user", gt=0, description="User ID between 1 and 1000")):
@@ -44,7 +54,6 @@ def get_user(user_id: int = Path(..., title="ID of the user", gt=0, description=
 def delete_user(user_id: int):
     try:
         userIndex = lookForUserIndexByUserID(users, user_id)
-        print(99999947, userIndex, users[userIndex])
         if userIndex < 0:
             raise IndexError("User not found")
         else:
