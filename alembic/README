@@ -1,0 +1,10 @@
+Generic single-database configuration.
+
+# Commands to upgrade and downgrade
+`alembic upgrade head`
+`alembic downgrade base`
+
+
+Steps to get here
+Step 1: `alembic init alembic`
+Step 2: `alembic revision -m "Add hashed_password to users"`
