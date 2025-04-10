@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Path, Depends
+from fastapi import APIRouter, HTTPException, Path, Depends, Query
 from app.types.user import User
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
@@ -28,8 +28,14 @@ async def create_user(user: UserCreate, db: AsyncSession = Depends(get_db)):
 
 # route to retrieve all users
 @router.get("/users")
-async def get_users(db: AsyncSession = Depends(get_db)):
-    result = await db.execute(select(UserModel))
+async def get_users(db: AsyncSession = Depends(get_db),
+    limit: int = Query(10, ge=1, le=100, description="Number of users to return"),
+    page: int = Query(0, ge=0, description="How many users to skip"),
+):
+    # result = await db.execute(select(UserModel))
+    result = await db.execute(
+        select(UserModel).limit(limit).offset(page)
+    )
     users = result.scalars().all()
     return users
 
