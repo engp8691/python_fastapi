@@ -12,7 +12,7 @@ from sqlalchemy.future import select
 from app.db.schemas.user import UserCreate, UserOut
 from app.db.database import get_db
 from app.db.models.user import User as UserModel
-from app.utils.token import ACCESS_TOKEN_EXPIRE_MINUTES, authenticate_user, create_access_token
+from app.utils.token import ACCESS_TOKEN_EXPIRE_MINUTES, authenticate_user, create_access_token, get_current_user
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
@@ -37,11 +37,15 @@ async def create_user(user: UserCreate, db: AsyncSession = Depends(get_db)):
 
 # route to retrieve all users
 @router.get("/users")
-async def get_users(db: AsyncSession = Depends(get_db),
-    limit: int = Query(10, ge=1, le=100, description="Number of users to return"),
-    page: int = Query(0, ge=0, description="How many users to skip"),
+async def get_users(
+    current_user: dict = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+    limit: int = Query(default=10, ge=1, le=100),
+    page: int = Query(default=0, ge=0),
 ):
-    # result = await db.execute(select(UserModel))
+    if (current_user.name != "administrtor"):
+        raise HTTPException(status_code=403, detail=f"{current_user.name} have no admistrator permission to get all users!")
+
     result = await db.execute(
         select(UserModel).limit(limit).offset(page)
     )

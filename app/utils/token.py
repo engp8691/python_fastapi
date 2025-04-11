@@ -5,13 +5,16 @@ if not hasattr(bcrypt, "__about__"):
     bcrypt.__about__ = type("about", (), {})()
     bcrypt.__about__.__version__ = bcrypt.__version__
 
+from fastapi import Depends, HTTPException
 from datetime import datetime, timedelta, timezone
+from fastapi.security import OAuth2PasswordBearer
+from jose import JWTError, jwt
 from sqlalchemy.ext.asyncio import AsyncSession
 from passlib.context import CryptContext
 from typing import Optional
 from sqlalchemy.future import select
 from app.db.models.user import User as UserModel
-from jose import jwt
+from app.db.database import get_db
 
 # Secret key for encoding JWT
 SECRET_KEY = "my-very-strong-secret-key"
@@ -19,6 +22,7 @@ ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 def verify_password(plain_password, hashed_password):
     return pwd_context.verify(plain_password, hashed_password)
@@ -39,4 +43,24 @@ async def authenticate_user(email: str, password: str, db: AsyncSession):
     if not verify_password(password, user.hashed_password):
         return False
     
+    return user
+
+async def get_current_user(db: AsyncSession = Depends(get_db), token: str = Depends(oauth2_scheme)):
+    credentials_exception = HTTPException(status_code=401, detail="Could not validate credentials")
+
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        username: str = payload.get("sub")
+
+        if username is None:
+            raise credentials_exception
+    except JWTError:
+        raise credentials_exception
+
+    result = await db.execute(select(UserModel).where(UserModel.email == username))
+    user = result.scalars().first()
+
+    if user is None:
+        raise credentials_exception
+
     return user
