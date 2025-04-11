@@ -49,7 +49,9 @@ async def test_create_user(mock_db):
         response = await ac.post("/users", json={
             "name": "Charlie",
             "email": "charlie@example.com",
-            "age": 30
+            "age": 30,
+            "role": "user",
+            "hashed_password": "eyJhb...64"
         })
 
     data = response.json()
@@ -57,6 +59,8 @@ async def test_create_user(mock_db):
     assert response.status_code == 200
     assert data["name"] == "Charlie"
     assert data["email"] == "charlie@example.com"
+    assert data["role"] == "user"
+    assert data["hashed_password"] == "eyJhb...64"
     
     app.dependency_overrides.clear()
 
@@ -163,7 +167,9 @@ async def test_update_user(mock_db):
         response = await ac.put("/users/3", json={
             "name": "New_Charlie",
             "age": 35,
-            "email": "new_charlie@tom.com"
+            "email": "new_charlie@tom.com",
+            "role": "user",
+            "hashed_password": "eyJhb...64"
         })
 
     data = response.json()
@@ -172,5 +178,7 @@ async def test_update_user(mock_db):
     assert data["user"]["name"] == "New_Charlie"
     assert data["user"]["email"] == "new_charlie@tom.com"
     assert data["user"]["age"] == 35
+    assert data["user"]["role"] == "user"
+    assert data["user"]["hashed_password"] == "eyJhb...64"
     
     app.dependency_overrides.clear()
