@@ -12,7 +12,7 @@ from sqlalchemy.future import select
 from app.db.schemas.user import UserCreate, UserOut
 from app.db.database import get_db
 from app.db.models.user import User as UserModel
-from app.uitls import ACCESS_TOKEN_EXPIRE_MINUTES, authenticate_user, create_access_token
+from app.utils.token import ACCESS_TOKEN_EXPIRE_MINUTES, authenticate_user, create_access_token
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
