@@ -1,13 +1,22 @@
+import bcrypt
+# Monkey patch bcrypt to make it compatible with passlib 1.7.4
+if not hasattr(bcrypt, "__about__"):
+    bcrypt.__about__ = type("about", (), {})()
+    bcrypt.__about__.__version__ = bcrypt.__version__
+
 from fastapi import APIRouter, HTTPException, Path, Depends, Query
-from app.types.user import User
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from datetime import timedelta
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from app.db.schemas.user import UserCreate, UserOut
 from app.db.database import get_db
 from app.db.models.user import User as UserModel
+from app.uitls import ACCESS_TOKEN_EXPIRE_MINUTES, authenticate_user, create_access_token
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 router = APIRouter()
-users = []
 
 # route to create a user
 @router.post("/users", response_model=UserOut)
@@ -87,3 +96,13 @@ async def update_user(user_update: UserCreate, user_id: int = Path(..., title="I
     await db.refresh(user)
 
     return {"message": "User updated", "user": user}
+
+
+@router.post("/login")
+async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: AsyncSession = Depends(get_db)):
+    user = await authenticate_user(form_data.username, form_data.password, db)
+    if not user:
+        raise HTTPException(status_code=401, detail="Invalid credentials")
+    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token = create_access_token(data={"sub": user.email}, expires_delta=access_token_expires)
+    return {"access_token": access_token, "token_type": "bearer"}
