@@ -82,7 +82,11 @@ async def update_user(user_update: UserCreate, user_id: int = Path(..., title="I
         user.email = user_update.email
     if user_update.age is not None:
         user.age = user_update.age
-
+    if user_update.role is not None:
+        user.role = user_update.role
+    if user_update.hashed_password is not None:
+        user.hashed_password = user_update.hashed_password
+    
     await db.commit()
     await db.refresh(user)
 

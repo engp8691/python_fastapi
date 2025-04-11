@@ -40,7 +40,9 @@ async def test_update_user(mock_db):
         response = await ac.put("/users/3", json={
             "name": "New_Charlie",
             "age": 35,
-            "email": "new_charlie@tom.com"
+            "email": "new_charlie@tom.com",
+            "role": "user",
+            "hashed_password": "eyJhb...64"
         })
 
     data = response.json()
@@ -49,5 +51,7 @@ async def test_update_user(mock_db):
     assert data["user"]["name"] == "New_Charlie"
     assert data["user"]["email"] == "new_charlie@tom.com"
     assert data["user"]["age"] == 35
+    assert data["user"]["role"] == "user"
+    assert data["user"]["hashed_password"] == "eyJhb...64"
     
     app.dependency_overrides.clear()

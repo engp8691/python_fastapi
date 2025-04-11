@@ -12,3 +12,4 @@ class User(Base):
     email = Column(String, unique=True, index=True)
     age = Column(Integer, nullable=False)
     hashed_password = Column(String, nullable=False, default="")
+    role = Column(String, nullable=False, default="")
