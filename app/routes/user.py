@@ -38,12 +38,12 @@ async def create_user(user: UserCreate, db: AsyncSession = Depends(get_db)):
 # route to retrieve all users
 @router.get("/users")
 async def get_users(
-    current_user: dict = Depends(get_current_user),
+    current_user: UserModel = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
     limit: int = Query(default=10, ge=1, le=100),
     page: int = Query(default=0, ge=0),
 ):
-    if (current_user.name != "administrtor"):
+    if (current_user.role != "administrator"):
         raise HTTPException(status_code=403, detail=f"{current_user.name} have no admistrator permission to get all users!")
 
     result = await db.execute(
@@ -112,5 +112,16 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: AsyncSessi
     if not user:
         raise HTTPException(status_code=401, detail="Invalid credentials")
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    access_token = create_access_token(data={"sub": user.email}, expires_delta=access_token_expires)
+    access_token = create_access_token(
+        data={
+            "sub": user.id,
+            "user": {
+                "name": user.name,
+                "role": user.role,
+                "age": user.age,
+                "email": user.email
+            }
+        },
+        expires_delta=access_token_expires
+    )
     return {"access_token": access_token, "token_type": "bearer"}
