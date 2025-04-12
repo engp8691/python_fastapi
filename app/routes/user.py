@@ -1,4 +1,6 @@
 import bcrypt
+
+from app.types.user import LoginPayload
 # Monkey patch bcrypt to make it compatible with passlib 1.7.4
 if not hasattr(bcrypt, "__about__"):
     bcrypt.__about__ = type("about", (), {})()
@@ -109,6 +111,28 @@ async def update_user(user_update: UserCreate, user_id: int = Path(..., title="I
 @router.post("/login")
 async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: AsyncSession = Depends(get_db)):
     user = await authenticate_user(form_data.username, form_data.password, db)
+    if not user:
+        raise HTTPException(status_code=401, detail="Invalid credentials")
+    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token = create_access_token(
+        data={
+            "sub": user.id,
+            "user": {
+                "name": user.name,
+                "role": user.role,
+                "age": user.age,
+                "email": user.email
+            }
+        },
+        expires_delta=access_token_expires
+    )
+    return {"access_token": access_token, "token_type": "bearer"}
+
+
+@router.post("/v2/login")
+async def login(payload: LoginPayload, db: AsyncSession = Depends(get_db)):
+    print(999134, payload, type(payload))
+    user = await authenticate_user(payload.email, payload.password, db)
     if not user:
         raise HTTPException(status_code=401, detail="Invalid credentials")
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
