@@ -39,9 +39,7 @@ async def authenticate_user(email: str, password: str, db: AsyncSession) -> User
     result = await db.execute(select(UserModel).where(UserModel.email == email))
     user = result.scalars().first()
 
-    if not user:
-        return False
-    if not verify_password(password, user.hashed_password):
+    if not user or not verify_password(password, user.hashed_password):
         return False
     
     return user
