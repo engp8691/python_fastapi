@@ -5,7 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from unittest.mock import AsyncMock, MagicMock
 
 from app.routes.user import router as user_router
-from app.db.models.user import User as UserModel
+from app.db.models.user import UserModelDB
 from app.db.database import get_db
 
 # Create test app
@@ -21,7 +21,7 @@ def mock_db():
 @pytest.mark.asyncio
 async def test_update_user(mock_db):
     mock_result = MagicMock()
-    mock_result.scalars.return_value.first.return_value = UserModel(id=3, name="Old_Charlie", email="old_charlie@example.com", age=30)
+    mock_result.scalars.return_value.first.return_value = UserModelDB(id=3, name="Old_Charlie", email="old_charlie@example.com", age=30)
     mock_db.execute.return_value = mock_result
 
     # Mock commit

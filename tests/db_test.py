@@ -6,7 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from unittest.mock import AsyncMock, MagicMock
 
 from app.routes.user import router as user_router
-from app.db.models.user import User as UserModel
+from app.db.models.user import UserModelDB
 from app.db.database import get_db
 
 # Create test app and add routes
@@ -67,11 +67,11 @@ async def test_create_user(mock_db):
 # Get all users test
 @pytest.mark.asyncio
 async def test_get_users(mock_db):
-    # Mock the DB response for select(UserModel)
+    # Mock the DB response for select(UserModelDB)
     mock_result = MagicMock()
     mock_result.scalars.return_value.all.return_value = [
-        UserModel(id=1, name="Alice", email="alice@example.com"),
-        UserModel(id=2, name="Bob", email="bob@example.com"),
+        UserModelDB(id=1, name="Alice", email="alice@example.com"),
+        UserModelDB(id=2, name="Bob", email="bob@example.com"),
     ]
     mock_db.execute.return_value = mock_result
 
@@ -97,7 +97,7 @@ async def test_get_users(mock_db):
 @pytest.mark.asyncio
 async def test_get_user(mock_db):
     mock_result = MagicMock()
-    mock_result.scalars.return_value.first.return_value = UserModel(id=3, name="Charlie", email="charlie@example.com", age=30)
+    mock_result.scalars.return_value.first.return_value = UserModelDB(id=3, name="Charlie", email="charlie@example.com", age=30)
     mock_db.execute.return_value = mock_result
 
     # Override the dependency
@@ -121,7 +121,7 @@ async def test_get_user(mock_db):
 @pytest.mark.asyncio
 async def test_delete_user(mock_db):
     mock_result = MagicMock()
-    mock_result.scalars.return_value.first.return_value = UserModel(id=3, name="Charlie", email="charlie@example.com", age=30)
+    mock_result.scalars.return_value.first.return_value = UserModelDB(id=3, name="Charlie", email="charlie@example.com", age=30)
     mock_db.execute.return_value = mock_result
 
     # Mock delete
@@ -148,7 +148,7 @@ async def test_delete_user(mock_db):
 @pytest.mark.asyncio
 async def test_update_user(mock_db):
     mock_result = MagicMock()
-    mock_result.scalars.return_value.first.return_value = UserModel(id=3, name="Old_Charlie", email="old_charlie@example.com", age=30)
+    mock_result.scalars.return_value.first.return_value = UserModelDB(id=3, name="Old_Charlie", email="old_charlie@example.com", age=30)
     mock_db.execute.return_value = mock_result
 
     # Mock commit

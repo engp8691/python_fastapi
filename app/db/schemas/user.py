@@ -1,5 +1,4 @@
-from typing import Optional
-from pydantic import BaseModel, EmailStr, Field
+from pydantic import BaseModel, ConfigDict, EmailStr, Field
 
 class UserBase(BaseModel):
     name: str
@@ -12,7 +11,5 @@ class UserCreate(UserBase):
 
 class UserOut(UserBase):
     id: int
-    hashed_password: Optional[str] = None
 
-    class ConfigDict:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)
