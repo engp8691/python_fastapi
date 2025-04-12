@@ -1,13 +1,24 @@
+import bcrypt
+
+from app.types.user import LoginPayload
+# Monkey patch bcrypt to make it compatible with passlib 1.7.4
+if not hasattr(bcrypt, "__about__"):
+    bcrypt.__about__ = type("about", (), {})()
+    bcrypt.__about__.__version__ = bcrypt.__version__
+
 from fastapi import APIRouter, HTTPException, Path, Depends, Query
-from app.types.user import User
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from datetime import timedelta
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from app.db.schemas.user import UserCreate, UserOut
 from app.db.database import get_db
 from app.db.models.user import User as UserModel
+from app.utils.token import ACCESS_TOKEN_EXPIRE_MINUTES, authenticate_user, create_access_token, get_current_user
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 router = APIRouter()
-users = []
 
 # route to create a user
 @router.post("/users", response_model=UserOut)
@@ -28,11 +39,15 @@ async def create_user(user: UserCreate, db: AsyncSession = Depends(get_db)):
 
 # route to retrieve all users
 @router.get("/users")
-async def get_users(db: AsyncSession = Depends(get_db),
-    limit: int = Query(10, ge=1, le=100, description="Number of users to return"),
-    page: int = Query(0, ge=0, description="How many users to skip"),
+async def get_users(
+    current_user: UserModel = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+    limit: int = Query(default=10, ge=1, le=100),
+    page: int = Query(default=0, ge=0),
 ):
-    # result = await db.execute(select(UserModel))
+    if (current_user.role != "administrator"):
+        raise HTTPException(status_code=403, detail=f"{current_user.name} have no admistrator permission to get all users!")
+
     result = await db.execute(
         select(UserModel).limit(limit).offset(page)
     )
@@ -91,3 +106,46 @@ async def update_user(user_update: UserCreate, user_id: int = Path(..., title="I
     await db.refresh(user)
 
     return {"message": "User updated", "user": user}
+
+
+@router.post("/login")
+async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: AsyncSession = Depends(get_db)):
+    user = await authenticate_user(form_data.username, form_data.password, db)
+    if not user:
+        raise HTTPException(status_code=401, detail="Invalid credentials")
+    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token = create_access_token(
+        data={
+            "sub": user.id,
+            "user": {
+                "name": user.name,
+                "role": user.role,
+                "age": user.age,
+                "email": user.email
+            }
+        },
+        expires_delta=access_token_expires
+    )
+    return {"access_token": access_token, "token_type": "bearer"}
+
+
+@router.post("/v2/login")
+async def login(payload: LoginPayload, db: AsyncSession = Depends(get_db)):
+    print(999134, payload, type(payload))
+    user = await authenticate_user(payload.email, payload.password, db)
+    if not user:
+        raise HTTPException(status_code=401, detail="Invalid credentials")
+    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token = create_access_token(
+        data={
+            "sub": user.id,
+            "user": {
+                "name": user.name,
+                "role": user.role,
+                "age": user.age,
+                "email": user.email
+            }
+        },
+        expires_delta=access_token_expires
+    )
+    return {"access_token": access_token, "token_type": "bearer"}
