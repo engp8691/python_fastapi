@@ -64,3 +64,6 @@ async def get_current_user(db: AsyncSession = Depends(get_db), token: str = Depe
         raise credentials_exception
 
     return user
+
+def hash_password(password: str) -> str:
+    return pwd_context.hash(password)
