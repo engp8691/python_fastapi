@@ -35,7 +35,7 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
 
-async def authenticate_user(email: str, password: str, db: AsyncSession):
+async def authenticate_user(email: str, password: str, db: AsyncSession) -> UserModel:
     result = await db.execute(select(UserModel).where(UserModel.email == email))
     user = result.scalars().first()
 
@@ -55,16 +55,12 @@ async def get_current_user(db: AsyncSession = Depends(get_db), token: str = Depe
         if user_data is None:
             raise credentials_exception
         
-        print(999956, user_data, type(user_data))
         userObj = UserCreate(**user_data)
-        print(999958, userObj, type(userObj))
-        print(999959, userObj.name, userObj.email)        
     except JWTError:
         raise credentials_exception
 
     result = await db.execute(select(UserModel).where(UserModel.email == userObj.email))
     user = result.scalars().first()
-    print(999967, user)
 
     if user is None:
         raise credentials_exception
