@@ -1,6 +1,6 @@
 """Add role to users
 
-Revision ID: 9680c3d8b23d
+Revision ID: add_role_to_users
 Revises: add_hashed_password
 Create Date: 2025-04-11 15:44:59.826458
 
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '9680c3d8b23d'
+revision: str = 'add_role_to_users'
 down_revision: Union[str, None] = 'add_hashed_password'
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None

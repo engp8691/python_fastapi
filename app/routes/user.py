@@ -56,21 +56,23 @@ async def get_users(
         select(UserModelDB).limit(limit).offset(page)
     )
     users = result.scalars().all()
-    return users
+
+    return [UserOut.model_validate(user) for user in users]
 
 # route to retrieve a user
 @router.get("/users/{user_id}")
-async def get_user(db: AsyncSession = Depends(get_db), user_id: int = Path(..., title="ID of the user", gt=0, description="User ID between 1 and 1000")):
+async def get_user(db: AsyncSession = Depends(get_db), user_id: str = Path(..., title="ID of the user", min_length=32, max_length=32)):
     result = await db.execute(select(UserModelDB).where(UserModelDB.id == user_id))
     existing_user = result.scalars().first()
     if not existing_user:
         raise HTTPException(status_code=404, detail=f"User with id={user_id} does not exist")
 
-    return existing_user
+    return UserOut.model_validate(existing_user)
+    # return existing_user
 
 # route to remove a user
 @router.delete("/users/{user_id}")
-async def delete_user(db: AsyncSession = Depends(get_db), user_id: int = Path(..., title="ID of the user", gt=0, description="User ID between 1 and 1000")):
+async def delete_user(db: AsyncSession = Depends(get_db), user_id: str = Path(..., title="ID of the user", min_length=32, max_length=32)):
     # Fetch the user by ID
     result = await db.execute(select(UserModelDB).where(UserModelDB.id == user_id))
     user = result.scalars().first()
@@ -86,7 +88,7 @@ async def delete_user(db: AsyncSession = Depends(get_db), user_id: int = Path(..
 
 # route to update a user
 @router.put("/users/{user_id}")
-async def update_user(user_update: UserUpdate, user_id: int = Path(..., title="ID of the user", gt=0, description="User ID between 1 and 1000"), db: AsyncSession = Depends(get_db),):
+async def update_user(user_update: UserUpdate, user_id: str = Path(..., title="ID of the user", min_length=32, max_length=32), db: AsyncSession = Depends(get_db),):
     # Fetch the user by ID
     result = await db.execute(select(UserModelDB).where(UserModelDB.id == user_id))
     user = result.scalars().first()
