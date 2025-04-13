@@ -20,10 +20,10 @@ depends_on: Union[str, Sequence[str], None] = None
 
 def upgrade():
     op.add_column('users',
-        sa.Column('role', sa.String(), nullable=False, server_default='')
+        sa.Column('role2', sa.String(), nullable=False, server_default='')
     )
-    op.alter_column('users', 'role', server_default=None)
+    op.alter_column('users', 'role2', server_default=None)
 
 
 def downgrade():
-    op.drop_column('users', 'role')
+    op.drop_column('users', 'role2')

@@ -20,10 +20,10 @@ depends_on: Union[str, Sequence[str], None] = None
 
 def upgrade():
     op.add_column('users',
-        sa.Column('hashed_password', sa.String(), nullable=False, server_default='')
+        sa.Column('hashed_password2', sa.String(), nullable=False, server_default='')
     )
-    op.alter_column('users', 'hashed_password', server_default=None)
+    op.alter_column('users', 'hashed_password2', server_default=None)
 
 
 def downgrade():
-    op.drop_column('users', 'hashed_password')
+    op.drop_column('users', 'hashed_password2')
