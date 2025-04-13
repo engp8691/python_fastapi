@@ -15,7 +15,6 @@ from typing import Optional
 from sqlalchemy.future import select
 from app.db.models.user import UserModelDB
 from app.db.database import get_db
-from app.db.schemas.user import UserCreate
 
 # Secret key for encoding JWT
 SECRET_KEY = "my-very-strong-secret-key"
@@ -53,11 +52,12 @@ async def get_current_user(db: AsyncSession = Depends(get_db), token: str = Depe
         if user_data is None:
             raise credentials_exception
         
-        userObj = UserCreate(**user_data)
+        # userObj = UserUpdate(**user_data)
     except JWTError:
-        raise credentials_exception
+        raise HTTPException(status_code=401, detail="Could not validate credentials 1234")
 
-    result = await db.execute(select(UserModelDB).where(UserModelDB.email == userObj.email))
+    # result = await db.execute(select(UserModelDB).where(UserModelDB.email == userObj.email))
+    result = await db.execute(select(UserModelDB).where(UserModelDB.email == user_data["email"]))
     user = result.scalars().first()
 
     if user is None:

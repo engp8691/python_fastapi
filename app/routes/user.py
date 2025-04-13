@@ -11,7 +11,7 @@ from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from datetime import timedelta
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
-from app.db.schemas.user import UserCreate, UserOut
+from app.db.schemas.user import UserCreate, UserOut, UserUpdate
 from app.db.database import get_db
 from app.db.models.user import UserModelDB
 from app.utils.token import ACCESS_TOKEN_EXPIRE_MINUTES, authenticate_user, create_access_token, get_current_user, hash_password
@@ -87,7 +87,7 @@ async def delete_user(db: AsyncSession = Depends(get_db), user_id: int = Path(..
 
 # route to update a user
 @router.put("/users/{user_id}")
-async def update_user(user_update: UserCreate, user_id: int = Path(..., title="ID of the user", gt=0, description="User ID between 1 and 1000"), db: AsyncSession = Depends(get_db),):
+async def update_user(user_update: UserUpdate, user_id: int = Path(..., title="ID of the user", gt=0, description="User ID between 1 and 1000"), db: AsyncSession = Depends(get_db),):
     # Fetch the user by ID
     result = await db.execute(select(UserModelDB).where(UserModelDB.id == user_id))
     user = result.scalars().first()
@@ -104,13 +104,13 @@ async def update_user(user_update: UserCreate, user_id: int = Path(..., title="I
         user.age = user_update.age
     if user_update.role is not None:
         user.role = user_update.role
-    if user_update.hashed_password is not None:
-        user.hashed_password = user_update.hashed_password
+    if user_update.password is not None:
+        user.hashed_password = hash_password(user_update.password)
     
     await db.commit()
     await db.refresh(user)
 
-    return {"message": "User updated", "user": user}
+    return {"message": "User updated", "user": UserOut.model_validate(user)}
 
 
 @router.post("/login")
@@ -121,7 +121,7 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: AsyncSessi
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token(
         data={
-            "sub": user.id,
+            "sub": str(user.id),
             "user": {
                 "name": user.name,
                 "role": user.role,
@@ -136,14 +136,13 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: AsyncSessi
 
 @router.post("/v2/login")
 async def login(payload: LoginPayload, db: AsyncSession = Depends(get_db)):
-    print(999134, payload, type(payload))
     user = await authenticate_user(payload.email, payload.password, db)
     if not user:
         raise HTTPException(status_code=401, detail="Invalid credentials")
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token(
         data={
-            "sub": user.id,
+            "sub": str(user.id),
             "user": {
                 "name": user.name,
                 "role": user.role,
