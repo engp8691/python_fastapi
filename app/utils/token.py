@@ -54,7 +54,7 @@ async def get_current_user(db: AsyncSession = Depends(get_db), token: str = Depe
         
         # userObj = UserUpdate(**user_data)
     except JWTError:
-        raise HTTPException(status_code=401, detail="Could not validate credentials 1234")
+        raise credentials_exception
 
     # result = await db.execute(select(UserModelDB).where(UserModelDB.email == userObj.email))
     result = await db.execute(select(UserModelDB).where(UserModelDB.email == user_data["email"]))
