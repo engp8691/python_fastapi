@@ -38,7 +38,6 @@ async def create_user(user: UserCreate, db: AsyncSession = Depends(get_db)):
     await db.commit()
     await db.refresh(new_user)
 
-
     return UserOut.model_validate(new_user)
     # return new_user
 
