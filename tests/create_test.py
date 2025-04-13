@@ -21,7 +21,7 @@ def mock_db():
 @pytest.mark.asyncio
 async def test_update_user(mock_db):
     mock_result = MagicMock()
-    mock_result.scalars.return_value.first.return_value = UserModelDB(id=3, name="Old_Charlie", email="old_charlie@example.com", age=30)
+    mock_result.scalars.return_value.first.return_value = UserModelDB(id='cfee03779e32418882389be25762c2af', name="Old_Charlie", email="old_charlie@example.com", role="user", age=30)
     mock_db.execute.return_value = mock_result
 
     # Mock commit
@@ -37,7 +37,7 @@ async def test_update_user(mock_db):
     # Send request
     transport = ASGITransport(app=app)
     async with AsyncClient(transport=transport, base_url="http://test") as ac:
-        response = await ac.put("/users/3", json={
+        response = await ac.put("/users/cfee03779e32418882389be25762c2af", json={
             "name": "New_Charlie",
             "age": 35,
             "email": "new_charlie@tom.com",

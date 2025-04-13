@@ -31,7 +31,7 @@ async def test_create_user(mock_db):
 
     # Mock add to just hold the object
     def add(user):
-        user.id = 3  # Simulate DB assigning an ID
+        user.id = 'cfee03779e32418882389be25762c2af'
     mock_db.add.side_effect = add
 
     # Mock refresh as noop (id already set above)
@@ -75,8 +75,8 @@ async def test_get_users(mock_db):
 
     # Mock the return in file `app/routes/user.py` at line 56
     mock_result.scalars.return_value.all.return_value = [
-        UserModelDB(id=1, name="Alice", email="alice@example.com"),
-        UserModelDB(id=2, name="Bob", email="bob@example.com"),
+        UserModelDB(id='cfee03779e32418882389be25762c2af', name="Alice", email="alice@example.com", role="administrator", age=30),
+        UserModelDB(id='cfee03779e32418882389be25762c2af', name="Bob", email="bob@example.com", role="user", age=20),
     ]
     mock_db.execute.return_value = mock_result
 
@@ -116,7 +116,7 @@ async def test_get_users(mock_db):
 @pytest.mark.asyncio
 async def test_get_user(mock_db):
     mock_result = MagicMock()
-    mock_result.scalars.return_value.first.return_value = UserModelDB(id=3, name="Charlie", email="charlie@example.com", age=30)
+    mock_result.scalars.return_value.first.return_value = UserModelDB(id='cfee03779e32418882389be25762c2af', name="Charlie", email="charlie@example.com", age=30, role="user")
     mock_db.execute.return_value = mock_result
 
     # Override the dependency
@@ -127,7 +127,7 @@ async def test_get_user(mock_db):
     # Send request
     transport = ASGITransport(app=app)
     async with AsyncClient(transport=transport, base_url="http://test") as ac:
-        response = await ac.get("/users/3")
+        response = await ac.get("/users/cfee03779e32418882389be25762c2af")
 
     data = response.json()
 
@@ -140,7 +140,7 @@ async def test_get_user(mock_db):
 @pytest.mark.asyncio
 async def test_delete_user(mock_db):
     mock_result = MagicMock()
-    mock_result.scalars.return_value.first.return_value = UserModelDB(id=3, name="Charlie", email="charlie@example.com", age=30)
+    mock_result.scalars.return_value.first.return_value = UserModelDB(id='cfee03779e32418882389be25762c2af', name="Charlie", email="charlie@example.com", age=30)
     mock_db.execute.return_value = mock_result
 
     # Mock delete
@@ -156,7 +156,7 @@ async def test_delete_user(mock_db):
     # Send request
     transport = ASGITransport(app=app)
     async with AsyncClient(transport=transport, base_url="http://test") as ac:
-        response = await ac.delete("/users/3")
+        response = await ac.delete("/users/cfee03779e32418882389be25762c2af")
 
     data = response.json()
 
@@ -167,7 +167,7 @@ async def test_delete_user(mock_db):
 @pytest.mark.asyncio
 async def test_update_user(mock_db):
     mock_result = MagicMock()
-    mock_result.scalars.return_value.first.return_value = UserModelDB(id=3, name="Old_Charlie", email="old_charlie@example.com", age=30)
+    mock_result.scalars.return_value.first.return_value = UserModelDB(id='cfee03779e32418882389be25762c2af', name="Old_Charlie", email="old_charlie@example.com", age=30)
     mock_db.execute.return_value = mock_result
 
     # Mock commit
@@ -183,7 +183,7 @@ async def test_update_user(mock_db):
     # Send request
     transport = ASGITransport(app=app)
     async with AsyncClient(transport=transport, base_url="http://test") as ac:
-        response = await ac.put("/users/3", json={
+        response = await ac.put("/users/cfee03779e32418882389be25762c2af", json={
             "name": "New_Charlie",
             "age": 35,
             "email": "new_charlie@tom.com",
