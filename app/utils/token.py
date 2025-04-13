@@ -52,6 +52,7 @@ async def get_current_user(db: AsyncSession = Depends(get_db), token: str = Depe
         if user_data is None:
             raise credentials_exception
         
+        print(88888555, user_data)
         # userObj = UserUpdate(**user_data)
     except JWTError:
         raise HTTPException(status_code=401, detail="Could not validate credentials 1234")

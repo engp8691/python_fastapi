@@ -1,13 +1,15 @@
+from datetime import datetime, timedelta, timezone
 import pytest
 from httpx import AsyncClient
 from httpx import ASGITransport
 from fastapi import FastAPI
 from sqlalchemy.ext.asyncio import AsyncSession
 from unittest.mock import AsyncMock, MagicMock
-
+from jose import jwt
 from app.routes.user import router as user_router
 from app.db.models.user import UserModelDB
 from app.db.database import get_db
+from app.utils.token import ALGORITHM, SECRET_KEY
 
 # Create test app and add routes
 app = FastAPI()
@@ -51,7 +53,7 @@ async def test_create_user(mock_db):
             "email": "charlie@example.com",
             "age": 30,
             "role": "user",
-            "hashed_password": "eyJhb...64"
+            "password": "password-fake"
         })
 
     data = response.json()
@@ -60,15 +62,18 @@ async def test_create_user(mock_db):
     assert data["name"] == "Charlie"
     assert data["email"] == "charlie@example.com"
     assert data["role"] == "user"
-    assert data["hashed_password"] == "eyJhb...64"
     
     app.dependency_overrides.clear()
 
 # Get all users test
 @pytest.mark.asyncio
 async def test_get_users(mock_db):
-    # Mock the DB response for select(UserModelDB)
+    # Mock the return in file `app/utils/token.py` at line 61
     mock_result = MagicMock()
+    mock_result.scalars.return_value.first.return_value = UserModelDB(id=3, name="Charlie", role="administrator", email="charlie@example.com", age=30)
+    mock_db.execute.return_value = mock_result
+
+    # Mock the return in file `app/routes/user.py` at line 56
     mock_result.scalars.return_value.all.return_value = [
         UserModelDB(id=1, name="Alice", email="alice@example.com"),
         UserModelDB(id=2, name="Bob", email="bob@example.com"),
@@ -80,9 +85,24 @@ async def test_get_users(mock_db):
         yield mock_db
     app.dependency_overrides[get_db] = override_get_db
 
+    expire = datetime.now(timezone.utc) + timedelta(minutes=15)
+    to_encode = {
+        "sub": "1",
+        "user": {
+            "name": "nobody",
+            "role": "administrator",
+            "age": 25,
+            "email": "nobody@tom.com"
+        },
+        "exp": expire
+    }
+    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+    headers = {
+       "Authorization":  f"Bearer {encoded_jwt}"
+    }
     transport = ASGITransport(app=app)
     async with AsyncClient(transport=transport, base_url="http://test") as ac:
-        response = await ac.get("/users")
+        response = await ac.get("/users", headers=headers)
 
     assert response.status_code == 200
     data = response.json()
@@ -92,7 +112,6 @@ async def test_get_users(mock_db):
 
     # Cleanup override
     app.dependency_overrides.clear()
-
 
 @pytest.mark.asyncio
 async def test_get_user(mock_db):
@@ -169,7 +188,7 @@ async def test_update_user(mock_db):
             "age": 35,
             "email": "new_charlie@tom.com",
             "role": "user",
-            "hashed_password": "eyJhb...64"
+            "password": "new_password"
         })
 
     data = response.json()
@@ -179,6 +198,5 @@ async def test_update_user(mock_db):
     assert data["user"]["email"] == "new_charlie@tom.com"
     assert data["user"]["age"] == 35
     assert data["user"]["role"] == "user"
-    assert data["user"]["hashed_password"] == "eyJhb...64"
     
     app.dependency_overrides.clear()

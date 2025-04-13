@@ -42,7 +42,7 @@ async def test_update_user(mock_db):
             "age": 35,
             "email": "new_charlie@tom.com",
             "role": "user",
-            "hashed_password": "eyJhb...64"
+            "password": "fake-password"
         })
 
     data = response.json()
@@ -52,6 +52,5 @@ async def test_update_user(mock_db):
     assert data["user"]["email"] == "new_charlie@tom.com"
     assert data["user"]["age"] == 35
     assert data["user"]["role"] == "user"
-    assert data["user"]["hashed_password"] == "eyJhb...64"
     
     app.dependency_overrides.clear()
