@@ -9,7 +9,7 @@ from fastapi.testclient import TestClient
 from fastapi import FastAPI
 
 from app.routes.user import router as user_router
-from app.db.models.user import User as UserModel
+from app.db.models.user import UserModelDB
 from app.db.database import get_db
 
 app = FastAPI()
@@ -20,11 +20,11 @@ app.include_router(user_router)
 # def mock_db():
 #     mock_session = AsyncMock(spec=AsyncSession)
 
-#     # Mock the DB response for select(UserModel)
+#     # Mock the DB response for select(UserModelDB)
 #     mock_result = MagicMock()
 #     mock_result.scalars.return_value.all.return_value = [
-#         UserModel(id=1, name="Alice", email="alice@example.com"),
-#         UserModel(id=2, name="Bob", email="bob@example.com"),
+#         UserModelDB(id=1, name="Alice", email="alice@example.com"),
+#         UserModelDB(id=2, name="Bob", email="bob@example.com"),
 #     ]
 #     mock_session.execute.return_value = mock_result
 

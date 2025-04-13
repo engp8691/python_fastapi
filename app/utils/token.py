@@ -13,9 +13,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from passlib.context import CryptContext
 from typing import Optional
 from sqlalchemy.future import select
-from app.db.models.user import User as UserModel
+from app.db.models.user import UserModelDB
 from app.db.database import get_db
-from app.db.schemas.user import UserCreate, UserOut
 
 # Secret key for encoding JWT
 SECRET_KEY = "my-very-strong-secret-key"
@@ -35,8 +34,8 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
 
-async def authenticate_user(email: str, password: str, db: AsyncSession) -> UserModel:
-    result = await db.execute(select(UserModel).where(UserModel.email == email))
+async def authenticate_user(email: str, password: str, db: AsyncSession) -> UserModelDB:
+    result = await db.execute(select(UserModelDB).where(UserModelDB.email == email))
     user = result.scalars().first()
 
     if not user or not verify_password(password, user.hashed_password):
@@ -53,14 +52,18 @@ async def get_current_user(db: AsyncSession = Depends(get_db), token: str = Depe
         if user_data is None:
             raise credentials_exception
         
-        userObj = UserCreate(**user_data)
+        # userObj = UserUpdate(**user_data)
     except JWTError:
         raise credentials_exception
 
-    result = await db.execute(select(UserModel).where(UserModel.email == userObj.email))
+    # result = await db.execute(select(UserModelDB).where(UserModelDB.email == userObj.email))
+    result = await db.execute(select(UserModelDB).where(UserModelDB.email == user_data["email"]))
     user = result.scalars().first()
 
     if user is None:
         raise credentials_exception
 
     return user
+
+def hash_password(password: str) -> str:
+    return pwd_context.hash(password)
