@@ -12,6 +12,7 @@ order_product = Table(
     Column("order_id", String(32), ForeignKey("orders.id"), primary_key=True),
     Column("product_id", String(32), ForeignKey("products.id"), primary_key=True),
 )
+
 class UserModelDB(Base):
     __tablename__ = "users"
 
@@ -44,5 +45,3 @@ class ProductModelDB(Base):
     price = Column(Integer, nullable=False)
 
     orders = relationship("OrderModelDB", secondary=order_product, back_populates="products")
-
-

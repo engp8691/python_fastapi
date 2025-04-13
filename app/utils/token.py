@@ -13,7 +13,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from passlib.context import CryptContext
 from typing import Optional
 from sqlalchemy.future import select
-from app.db.models.user import UserModelDB
+from app.db.models.orm_models import UserModelDB
 from app.db.database import get_db
 
 # Secret key for encoding JWT

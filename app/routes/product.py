@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, Path
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from app.db.database import get_db  # your DB session dependency
-from app.db.models.user import ProductModelDB
+from app.db.models.orm_models import ProductModelDB
 from app.db.schemas.product import ProductCreate, ProductOut, ProductUpdate
 
 router = APIRouter(prefix="/products", tags=["Products"])

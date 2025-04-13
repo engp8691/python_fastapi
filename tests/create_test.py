@@ -5,7 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from unittest.mock import AsyncMock, MagicMock
 
 from app.routes.user import router as user_router
-from app.db.models.user import UserModelDB
+from app.db.models.orm_models import UserModelDB
 from app.db.database import get_db
 
 # Create test app
