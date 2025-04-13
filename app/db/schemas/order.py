@@ -7,3 +7,13 @@ class OrderCreate(BaseModel):
     price: float
     user_id: str
     product_ids: List[str]
+
+
+class OrderOut(BaseModel):
+    id: str
+    user_id: str
+    product_ids: List[str]
+    total_amount: float
+
+    class Config:
+        from_attributes = True
