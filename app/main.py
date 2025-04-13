@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from app.routes import hello, user, product
+from app.routes import hello, user, product, order
 
 app = FastAPI()
 
@@ -7,3 +7,4 @@ app = FastAPI()
 app.include_router(hello.router)
 app.include_router(user.router)
 app.include_router(product.router)
+app.include_router(order.router)

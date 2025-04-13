@@ -1,7 +1,8 @@
 import uuid
-from sqlalchemy import Column, ForeignKey, Integer, String, Table
-from sqlalchemy.orm import relationship
+from sqlalchemy import Column, ForeignKey, Integer, Numeric, String, Table
+from sqlalchemy.orm import relationship, Mapped, mapped_column
 from app.db.models.base import Base
+import uuid
 
 def generate_uuid_no_dash() -> str:
     return uuid.uuid4().hex  # hex gives UUID without dashes
@@ -28,20 +29,19 @@ class UserModelDB(Base):
 class OrderModelDB(Base):
     __tablename__ = "orders"
 
-    id = Column(String(32), primary_key=True, index=True, default=lambda: uuid.uuid4().hex)
-    item = Column(String, nullable=False)
-    quantity = Column(Integer, nullable=False)
-    user_id = Column(String(32), ForeignKey("users.id"), nullable=False)
+    id: Mapped[str] = mapped_column(String(32), primary_key=True, default=lambda: uuid.uuid4().hex)
+    user_id: Mapped[str] = mapped_column(String(32), ForeignKey("users.id"), nullable=False)
+    name = Column(String, nullable=False)
+    price = Column(Numeric(10, 2), nullable=False)
 
     user = relationship("UserModelDB", back_populates="orders")
     products = relationship("ProductModelDB", secondary=order_product, back_populates="orders")
-
 
 class ProductModelDB(Base):
     __tablename__ = "products"
 
     id = Column(String(32), primary_key=True, index=True, default=lambda: uuid.uuid4().hex)
     name = Column(String, nullable=False)
-    price = Column(Integer, nullable=False)
+    price = Column(Numeric(10, 2), nullable=False)
 
     orders = relationship("OrderModelDB", secondary=order_product, back_populates="products")
