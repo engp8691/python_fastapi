@@ -14,7 +14,7 @@ from sqlalchemy.future import select
 from app.db.schemas.user import UserCreate, UserOut, UserUpdate
 from app.db.database import get_db
 from app.db.models.orm_models import UserModelDB
-from app.utils.token import ACCESS_TOKEN_EXPIRE_MINUTES, authenticate_user, create_access_token, get_current_user, hash_password
+from app.utils.token import ACCESS_TOKEN_EXPIRE_MINUTES, authenticate_user, create_access_token, get_current_user, get_user_in_token_data, hash_password
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
@@ -61,7 +61,10 @@ async def get_users(
 
 # route to retrieve a user
 @router.get("/users/{user_id}")
-async def get_user(db: AsyncSession = Depends(get_db), user_id: str = Path(..., title="ID of the user", min_length=32, max_length=32)):
+async def get_user(
+    user_in_token_data = Depends(get_user_in_token_data),
+    db: AsyncSession = Depends(get_db),
+    user_id: str = Path(..., title="ID of the user", min_length=32, max_length=32)):
     result = await db.execute(select(UserModelDB).where(UserModelDB.id == user_id))
     existing_user = result.scalars().first()
     if not existing_user:
@@ -88,7 +91,15 @@ async def delete_user(db: AsyncSession = Depends(get_db), user_id: str = Path(..
 
 # route to update a user
 @router.put("/users/{user_id}")
-async def update_user(user_update: UserUpdate, user_id: str = Path(..., title="ID of the user", min_length=32, max_length=32), db: AsyncSession = Depends(get_db),):
+async def update_user(
+    user_update: UserUpdate,
+    user_id: str = Path(..., title="ID of the user", min_length=32, max_length=32),
+    user_in_token_data = Depends(get_user_in_token_data),
+    db: AsyncSession = Depends(get_db)
+):
+    if (user_id != user_in_token_data["id"] and "administrator" != user_in_token_data['role']):
+        raise HTTPException(status_code=403, detail="Updating other user except you is forbidden")
+
     # Fetch the user by ID
     result = await db.execute(select(UserModelDB).where(UserModelDB.id == user_id))
     user = result.scalars().first()
@@ -124,6 +135,7 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: AsyncSessi
         data={
             "sub": str(user.id),
             "user": {
+                "id": user.id,
                 "name": user.name,
                 "role": user.role,
                 "age": user.age,
@@ -145,6 +157,7 @@ async def login(payload: LoginPayload, db: AsyncSession = Depends(get_db)):
         data={
             "sub": str(user.id),
             "user": {
+                "id": user.id,
                 "name": user.name,
                 "role": user.role,
                 "age": user.age,
