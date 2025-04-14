@@ -13,7 +13,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from app.db.schemas.user import UserCreate, UserOut, UserUpdate
 from app.db.database import get_db
-from app.db.models.user import UserModelDB
+from app.db.models.orm_models import UserModelDB
 from app.utils.token import ACCESS_TOKEN_EXPIRE_MINUTES, authenticate_user, create_access_token, get_current_user, hash_password
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")

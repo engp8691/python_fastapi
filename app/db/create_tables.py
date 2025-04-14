@@ -1,7 +1,7 @@
 # app/db/create_tables.py
 import asyncio
 from app.db.database import engine
-from app.db.models.user import Base
+from app.db.models.orm_models import Base
 
 async def create_all():
     async with engine.begin() as conn:
