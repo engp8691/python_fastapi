@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, Path
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
+from sqlalchemy.orm import selectinload
 from app.db.database import get_db  # your DB session dependency
 from app.db.models.orm_models import ProductModelDB
 from app.db.schemas.product import ProductCreate, ProductOut, ProductUpdate
@@ -24,7 +25,7 @@ async def get_all_products(db: AsyncSession = Depends(get_db)):
 
 
 @router.get("/{product_id}", response_model=ProductOut)
-async def get_product(product_id: str = Path(..., title="ID of the user", min_length=32, max_length=32), db: AsyncSession = Depends(get_db)):
+async def get_product(product_id: str = Path(..., title="ID of the product", min_length=32, max_length=32), db: AsyncSession = Depends(get_db)):
     print(9999930, product_id)
     result = await db.execute(select(ProductModelDB).where(ProductModelDB.id == product_id))
     product = result.scalar_one_or_none()
@@ -34,7 +35,7 @@ async def get_product(product_id: str = Path(..., title="ID of the user", min_le
 
 
 @router.put("/{product_id}", response_model=ProductOut)
-async def update_product(product_update: ProductUpdate, product_id: str = Path(..., title="ID of the user", min_length=32, max_length=32), db: AsyncSession = Depends(get_db)):
+async def update_product(product_update: ProductUpdate, product_id: str = Path(..., title="ID of the product", min_length=32, max_length=32), db: AsyncSession = Depends(get_db)):
     result = await db.execute(select(ProductModelDB).where(ProductModelDB.id == product_id))
     product = result.scalar_one_or_none()
     if not product:
@@ -49,12 +50,22 @@ async def update_product(product_update: ProductUpdate, product_id: str = Path(.
 
 
 @router.delete("/{product_id}")
-async def delete_product(product_id: str = Path(..., title="ID of the user", min_length=32, max_length=32), db: AsyncSession = Depends(get_db)):
-    result = await db.execute(select(ProductModelDB).where(ProductModelDB.id == product_id))
+async def delete_product(product_id: str = Path(..., title="ID of the product", min_length=32, max_length=32), db: AsyncSession = Depends(get_db)):
+    result = await db.execute(
+        select(ProductModelDB)
+        .options(selectinload(ProductModelDB.orders))
+        .where(ProductModelDB.id == product_id)
+    )
     product = result.scalar_one_or_none()
+
     if not product:
         raise HTTPException(status_code=404, detail="Product not found")
 
+    for order in list(product.orders):
+        product.orders.remove(order)
+    await db.commit()
+
     await db.delete(product)
     await db.commit()
+
     return {"detail": "Product deleted"}
