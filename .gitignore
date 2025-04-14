@@ -3,5 +3,4 @@ __pycache__/
 *.pyc
 *coverage
 .env
-playground/questions.md
-playground/async.py
+/playground/

@@ -8,12 +8,17 @@ from app.db.models.orm_models import OrderModelDB, ProductModelDB, UserModelDB
 from app.db.schemas.order import OrderCreate, OrderOut, OrderUpdate
 from uuid import uuid4
 
+from app.utils.token import get_user_in_token_data
+
 router = APIRouter()
 
 router = APIRouter(prefix="/orders", tags=["Orders"])
 
 @router.post("/", status_code=201)
-async def create_order(order_data: OrderCreate, db: AsyncSession = Depends(get_db)):
+async def create_order(order_data: OrderCreate, user_in_token_data = Depends(get_user_in_token_data), db: AsyncSession = Depends(get_db)):
+    if (order_data.user_id != user_in_token_data["id"]):
+        raise HTTPException(status_code=403, detail="Make orders for another user is forbidden")
+
     user_result = await db.execute(select(UserModelDB).where(UserModelDB.id == order_data.user_id))
     user = user_result.scalar_one_or_none()
     if not user:
@@ -24,7 +29,7 @@ async def create_order(order_data: OrderCreate, db: AsyncSession = Depends(get_d
     )
     products = product_result.scalars().all()
     if len(products) != len(order_data.product_ids):
-        raise HTTPException(status_code=400, detail="One or more products not found")
+        raise HTTPException(status_code=400, detail="One or more products do not exist")
 
     order = OrderModelDB(id=uuid4().hex, name=order_data.name, price=order_data.price, user_id=order_data.user_id, products=products)
     db.add(order)
@@ -63,24 +68,30 @@ async def get_order_details(order_id: str, db: AsyncSession = Depends(get_db)):
     return order
 
 @router.delete("/{order_id}", status_code=204)
-async def delete_order(order_id: str, db: AsyncSession = Depends(get_db)):
+async def delete_order(order_id: str, user_in_token_data = Depends(get_user_in_token_data), db: AsyncSession = Depends(get_db)):
     result = await db.execute(select(OrderModelDB).where(OrderModelDB.id == order_id))
     order = result.scalar_one_or_none()
 
     if not order:
         raise HTTPException(status_code=404, detail="Order not found")
+    
+    if (order.user_id != user_in_token_data["id"]):
+        raise HTTPException(status_code=403, detail="Deleting orders of others is forbidden")
 
     await db.delete(order)
     await db.commit()
     return
 
 @router.put("/{order_id}", response_model=OrderOut)
-async def update_order(order_id: str, order_data: OrderUpdate, db: AsyncSession = Depends(get_db)):
+async def update_order(order_id: str, order_data: OrderUpdate, user_in_token_data = Depends(get_user_in_token_data), db: AsyncSession = Depends(get_db)):
     result = await db.execute(select(OrderModelDB).where(OrderModelDB.id == order_id))
     order = result.scalar_one_or_none()
 
     if not order:
         raise HTTPException(status_code=404, detail="Order not found")
+
+    if (order.user_id != user_in_token_data["id"]):
+        raise HTTPException(status_code=403, detail="Updating orders of others is forbidden")
 
     if order_data.name is not None:
         order.name = order_data.name
