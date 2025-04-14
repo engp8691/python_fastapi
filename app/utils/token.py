@@ -54,6 +54,7 @@ async def get_user_in_token_data(token: str = Depends(oauth2_scheme)):
     except JWTError:
         raise credentials_exception
 
+    print(9999957, user_data)
     return user_data
 
 async def get_current_user(db: AsyncSession = Depends(get_db), token: str = Depends(oauth2_scheme)):

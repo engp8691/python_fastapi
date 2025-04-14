@@ -75,8 +75,14 @@ async def get_user(
 
 # route to remove a user
 @router.delete("/users/{user_id}")
-async def delete_user(db: AsyncSession = Depends(get_db), user_id: str = Path(..., title="ID of the user", min_length=32, max_length=32)):
-    # Fetch the user by ID
+async def delete_user(
+    user_in_token_data = Depends(get_user_in_token_data),
+    db: AsyncSession = Depends(get_db),
+    user_id: str = Path(..., title="ID of the user", min_length=32, max_length=32)
+):
+    if (user_id != user_in_token_data["id"] and "administrator" != user_in_token_data['role']):
+        raise HTTPException(status_code=403, detail="Deleting other user is forbidden")
+
     result = await db.execute(select(UserModelDB).where(UserModelDB.id == user_id))
     user = result.scalars().first()
 
@@ -98,7 +104,7 @@ async def update_user(
     db: AsyncSession = Depends(get_db)
 ):
     if (user_id != user_in_token_data["id"] and "administrator" != user_in_token_data['role']):
-        raise HTTPException(status_code=403, detail="Updating other user except you is forbidden")
+        raise HTTPException(status_code=403, detail="Updating other user is forbidden")
 
     # Fetch the user by ID
     result = await db.execute(select(UserModelDB).where(UserModelDB.id == user_id))

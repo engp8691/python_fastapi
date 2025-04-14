@@ -15,6 +15,23 @@ from app.utils.token import ALGORITHM, SECRET_KEY
 app = FastAPI()
 app.include_router(user_router)
 
+expire = datetime.now(timezone.utc) + timedelta(minutes=15)
+to_encode = {
+    "sub": "cfee03779e32418882389be25762c2af",
+    "user": {
+        "id": "cfee03779e32418882389be25762c2af",
+        "name": "nobody",
+        "role": "administrator",
+        "age": 25,
+        "email": "nobody@tom.com"
+    },
+    "exp": expire
+}
+encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+headers = {
+    "Authorization":  f"Bearer {encoded_jwt}"
+}
+
 # Fixture for mocked DB session
 @pytest.fixture
 def mock_db():
@@ -85,21 +102,6 @@ async def test_get_users(mock_db):
         yield mock_db
     app.dependency_overrides[get_db] = override_get_db
 
-    expire = datetime.now(timezone.utc) + timedelta(minutes=15)
-    to_encode = {
-        "sub": "1",
-        "user": {
-            "name": "nobody",
-            "role": "administrator",
-            "age": 25,
-            "email": "nobody@tom.com"
-        },
-        "exp": expire
-    }
-    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
-    headers = {
-       "Authorization":  f"Bearer {encoded_jwt}"
-    }
     transport = ASGITransport(app=app)
     async with AsyncClient(transport=transport, base_url="http://test") as ac:
         response = await ac.get("/users", headers=headers)
@@ -127,7 +129,7 @@ async def test_get_user(mock_db):
     # Send request
     transport = ASGITransport(app=app)
     async with AsyncClient(transport=transport, base_url="http://test") as ac:
-        response = await ac.get("/users/cfee03779e32418882389be25762c2af")
+        response = await ac.get("/users/cfee03779e32418882389be25762c2af", headers=headers)
 
     data = response.json()
 
@@ -156,7 +158,7 @@ async def test_delete_user(mock_db):
     # Send request
     transport = ASGITransport(app=app)
     async with AsyncClient(transport=transport, base_url="http://test") as ac:
-        response = await ac.delete("/users/cfee03779e32418882389be25762c2af")
+        response = await ac.delete("/users/cfee03779e32418882389be25762c2af", headers=headers)
 
     data = response.json()
 
@@ -189,7 +191,9 @@ async def test_update_user(mock_db):
             "email": "new_charlie@tom.com",
             "role": "user",
             "password": "new_password"
-        })
+        },
+        headers=headers
+    )
 
     data = response.json()
 
