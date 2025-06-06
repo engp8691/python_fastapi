@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.config import ALLOWED_ORIGINS
 from app.middlewares.log import LogMiddleware as logger
 from app.routes import hello, user, product, order
+from app.routes import rpc
 from app.grpc.grpc_server import start_grpc_server
 import asyncio
 
@@ -25,6 +26,7 @@ app.include_router(hello.router)
 app.include_router(user.router)
 app.include_router(product.router)
 app.include_router(order.router)
+app.include_router(rpc.router)
 
 # 🚀 Launch gRPC server alongside FastAPI
 @app.on_event("startup")

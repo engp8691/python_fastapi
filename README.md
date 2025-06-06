@@ -18,8 +18,10 @@ Follow the following steps and run the script to create the DB and tables.
 - Step 6: run unit tests by `pytest --cov=app --cov-report=html`
 - Step 7: check the coverate under `htmlcov/index.html`
 - Step 8: swagger docs under `http://localhost:8000/docs`
+- Step 9: backup your package requirements by `pip freeze > requirements.txt`
 
-### steps to add gRPC inside.
+### steps to add gRPC inside
+
 1: create the grpc folder under app
 2: create the greeter.proto file under the grpc folder
 3: at the root folder of `fastapi_python` run `python -m grpc_tools.protoc -I./app/grpc --python_out=./app/grpc --grpc_python_out=./app/grpc app/grpc/greeter.proto`
@@ -29,4 +31,6 @@ Follow the following steps and run the script to create the DB and tables.
 
 ### lets make the client call inside a REST API
 
-
+1: add the route of `fastapi_python/app/routes/rpc.py`
+2: start python REST API app
+3: access it in the browser as `http://127.0.0.1:8000/rpc/greeting?name=YonglinLee`
