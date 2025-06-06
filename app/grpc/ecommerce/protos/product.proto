@@ -1,0 +1,12 @@
+syntax = "proto3";
+package ecommerce;
+
+import "common.proto";
+
+service ProductService {
+  rpc GetProduct(GetProductRequest) returns (ecommerce.common.Product);
+}
+
+message GetProductRequest {
+  string product_id = 1;
+}

@@ -24,13 +24,42 @@ Follow the following steps and run the script to create the DB and tables.
 
 - 1: create the grpc folder under app
 - 2: create the greeter.proto file under the grpc folder
-- 3: at the root folder of `fastapi_python` run `python -m grpc_tools.protoc -I./app/grpc --python_out=./app/grpc --grpc_python_out=./app/grpc app/grpc/greeter.proto`
-- 4: modidy `main.py` to call `start_grpc_server`
-- 5: start the app by `uvicorn app.main:app --reload`
-- 6: run the client to invoke the RPC by running `python -m app.grpc.client`
+- 3: at the root folder of `fastapi_python` run
 
-### lets make the client call inside a REST API
+`python -m grpc_tools.protoc -I./app/grpc --python_out=./app/grpc --grpc_python_out=./app/grpc app/grpc/greeter.proto`
+
+- 4: at the root folder of `fastapi_python` run
+
+`python -m grpc_tools.protoc -Iapp/grpc/ecommerce/protos --python_out=app/grpc/ecommerce/generated --grpc_python_out=app/grpc/ecommerce/generated app/grpc/ecommerce/protos/common.proto app/grpc/ecommerce/protos/user.proto app/grpc/ecommerce/protos/order.proto app/grpc/ecommerce/protos/product.proto`
+
+- 5: at the root folder of `fastapi_python` run `find app/grpc/ecommerce/generated -type f -name "*.py" -exec sed -i '' -E 's/^import (.*_pb2)/from . import \1/' {} \;`
+
+**_NOTE:_** step 5 manually fixes the relative path importing issue. TODO: Do research on this.
+
+- 6: modidy `main.py` to call `start_grpc_server`
+- 7: start the app by `uvicorn app.main:app --reload`
+- 8: run the client to invoke the RPC by running `python -m app.grpc.client`
+
+### Lets make the client call inside a REST API
 
 - 1: add the route of `fastapi_python/app/routes/rpc.py`
 - 2: start python REST API app
 - 3: access it in the browser as `http://127.0.0.1:8000/rpc/greeting?name=YonglinLee`
+
+### Test the server and the clients
+<!-- - python -m grpc_tools.protoc -Iapp/grpc/ecommerce/protos --python_out=app/grpc/ecommerce/generated --grpc_python_out=app/grpc/ecommerce/generated app/grpc/ecommerce/protos/common.proto app/grpc/ecommerce/protos/user.proto app/grpc/ecommerce/protos/order.proto app/grpc/ecommerce/protos/product.proto
+
+find app/grpc/ecommerce/generated -type f -name "*.py" -exec sed -i '' -E 's/^import (.*_pb2)/from . import \1/' {} \; -->
+
+**_NOTE:_** After step 7 starts fastapi app, test all the clients. If step 7 is not started, start the server
+
+`python -m app.grpc.grpc_server`
+
+test all the clients:
+
+**_NOTE:_** Make sure it is in the folder of `./fastapi_python`
+
+- 1: python -m app.grpc.client
+- 2: python -m app.grpc.ecommerce.order_client
+- 3: python -m app.grpc.ecommerce.product_client
+- 4: python -m app.grpc.ecommerce.user_client
