@@ -4,16 +4,9 @@ package ecommerce;
 import "common.proto";
 
 service OrderService {
-  rpc GetOrder(GetOrderRequest) returns (Order);
+  rpc GetOrder(GetOrderRequest) returns (ecommerce.common.Order);
 }
 
 message GetOrderRequest {
   string order_id = 1;
-}
-
-message Order {
-  string id = 1;
-  ecommerce.common.User user = 2;
-  repeated ecommerce.common.OrderItem items = 3;
-  float total_price = 4;
 }

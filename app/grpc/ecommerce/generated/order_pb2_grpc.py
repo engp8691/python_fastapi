@@ -3,6 +3,7 @@
 import grpc
 import warnings
 
+from . import common_pb2 as common__pb2
 from . import order_pb2 as order__pb2
 
 GRPC_GENERATED_VERSION = '1.72.1'
@@ -37,7 +38,7 @@ class OrderServiceStub(object):
         self.GetOrder = channel.unary_unary(
                 '/ecommerce.OrderService/GetOrder',
                 request_serializer=order__pb2.GetOrderRequest.SerializeToString,
-                response_deserializer=order__pb2.Order.FromString,
+                response_deserializer=common__pb2.Order.FromString,
                 _registered_method=True)
 
 
@@ -56,7 +57,7 @@ def add_OrderServiceServicer_to_server(servicer, server):
             'GetOrder': grpc.unary_unary_rpc_method_handler(
                     servicer.GetOrder,
                     request_deserializer=order__pb2.GetOrderRequest.FromString,
-                    response_serializer=order__pb2.Order.SerializeToString,
+                    response_serializer=common__pb2.Order.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -85,7 +86,7 @@ class OrderService(object):
             target,
             '/ecommerce.OrderService/GetOrder',
             order__pb2.GetOrderRequest.SerializeToString,
-            order__pb2.Order.FromString,
+            common__pb2.Order.FromString,
             options,
             channel_credentials,
             insecure,

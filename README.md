@@ -32,7 +32,9 @@ Follow the following steps and run the script to create the DB and tables.
 
 `python -m grpc_tools.protoc -Iapp/grpc/ecommerce/protos --python_out=app/grpc/ecommerce/generated --grpc_python_out=app/grpc/ecommerce/generated app/grpc/ecommerce/protos/common.proto app/grpc/ecommerce/protos/user.proto app/grpc/ecommerce/protos/order.proto app/grpc/ecommerce/protos/product.proto`
 
-- 5: at the root folder of `fastapi_python` run `find app/grpc/ecommerce/generated -type f -name "*.py" -exec sed -i '' -E 's/^import (.*_pb2)/from . import \1/' {} \;`
+- 5: at the root folder of `fastapi_python` run
+
+`find app/grpc/ecommerce/generated -type f -name "*.py" -exec sed -i '' -E 's/^import (.*_pb2)/from . import \1/' {} \;`
 
 **_NOTE:_** step 5 manually fixes the relative path importing issue. TODO: Do research on this.
 

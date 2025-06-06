@@ -25,7 +25,7 @@ _sym_db = _symbol_database.Default()
 from . import common_pb2 as common__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0border.proto\x12\tecommerce\x1a\x0c\x63ommon.proto\"#\n\x0fGetOrderRequest\x12\x10\n\x08order_id\x18\x01 \x01(\t\"z\n\x05Order\x12\n\n\x02id\x18\x01 \x01(\t\x12$\n\x04user\x18\x02 \x01(\x0b\x32\x16.ecommerce.common.User\x12*\n\x05items\x18\x03 \x03(\x0b\x32\x1b.ecommerce.common.OrderItem\x12\x13\n\x0btotal_price\x18\x04 \x01(\x02\x32H\n\x0cOrderService\x12\x38\n\x08GetOrder\x12\x1a.ecommerce.GetOrderRequest\x1a\x10.ecommerce.Orderb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0border.proto\x12\tecommerce\x1a\x0c\x63ommon.proto\"#\n\x0fGetOrderRequest\x12\x10\n\x08order_id\x18\x01 \x01(\t2O\n\x0cOrderService\x12?\n\x08GetOrder\x12\x1a.ecommerce.GetOrderRequest\x1a\x17.ecommerce.common.Orderb\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -34,8 +34,6 @@ if not _descriptor._USE_C_DESCRIPTORS:
   DESCRIPTOR._loaded_options = None
   _globals['_GETORDERREQUEST']._serialized_start=40
   _globals['_GETORDERREQUEST']._serialized_end=75
-  _globals['_ORDER']._serialized_start=77
-  _globals['_ORDER']._serialized_end=199
-  _globals['_ORDERSERVICE']._serialized_start=201
-  _globals['_ORDERSERVICE']._serialized_end=273
+  _globals['_ORDERSERVICE']._serialized_start=77
+  _globals['_ORDERSERVICE']._serialized_end=156
 # @@protoc_insertion_point(module_scope)

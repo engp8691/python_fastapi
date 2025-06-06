@@ -15,7 +15,7 @@ message User {
 
 message OrderItem {
   string id = 1;
-  Product product = 2; // ✅ this must be defined
+  Product product = 2;
   int32 quantity = 3;
 }
 
