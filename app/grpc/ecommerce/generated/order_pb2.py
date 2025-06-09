@@ -4,36 +4,34 @@
 # source: order.proto
 # Protobuf Python Version: 6.30.0
 """Generated protocol buffer code."""
+from . import common_pb2 as common__pb2
 from google.protobuf import descriptor as _descriptor
 from google.protobuf import descriptor_pool as _descriptor_pool
 from google.protobuf import runtime_version as _runtime_version
 from google.protobuf import symbol_database as _symbol_database
 from google.protobuf.internal import builder as _builder
+
 _runtime_version.ValidateProtobufRuntimeVersion(
-    _runtime_version.Domain.PUBLIC,
-    6,
-    30,
-    0,
-    '',
-    'order.proto'
+    _runtime_version.Domain.PUBLIC, 6, 30, 0, "", "order.proto"
 )
 # @@protoc_insertion_point(imports)
 
 _sym_db = _symbol_database.Default()
 
 
-from . import common_pb2 as common__pb2
-
-
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0border.proto\x12\tecommerce\x1a\x0c\x63ommon.proto\"#\n\x0fGetOrderRequest\x12\x10\n\x08order_id\x18\x01 \x01(\t2O\n\x0cOrderService\x12?\n\x08GetOrder\x12\x1a.ecommerce.GetOrderRequest\x1a\x17.ecommerce.common.Orderb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(
+    b'\n\x0border.proto\x12\tecommerce\x1a\x0c\x63ommon.proto":\n\x12\x43reateOrderRequest\x12\x0f\n\x07user_id\x18\x01 \x01(\t\x12\x13\n\x0bproduct_ids\x18\x02 \x03(\t"#\n\x0fGetOrderRequest\x12\x10\n\x08order_id\x18\x01 \x01(\t2\x96\x01\n\x0cOrderService\x12\x45\n\x0b\x43reateOrder\x12\x1d.ecommerce.CreateOrderRequest\x1a\x17.ecommerce.common.Order\x12?\n\x08GetOrder\x12\x1a.ecommerce.GetOrderRequest\x1a\x17.ecommerce.common.Orderb\x06proto3'
+)
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
-_builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'order_pb2', _globals)
+_builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, "order_pb2", _globals)
 if not _descriptor._USE_C_DESCRIPTORS:
   DESCRIPTOR._loaded_options = None
-  _globals['_GETORDERREQUEST']._serialized_start=40
-  _globals['_GETORDERREQUEST']._serialized_end=75
-  _globals['_ORDERSERVICE']._serialized_start=77
-  _globals['_ORDERSERVICE']._serialized_end=156
+  _globals["_CREATEORDERREQUEST"]._serialized_start = 40
+  _globals["_CREATEORDERREQUEST"]._serialized_end = 98
+  _globals["_GETORDERREQUEST"]._serialized_start = 100
+  _globals["_GETORDERREQUEST"]._serialized_end = 135
+  _globals["_ORDERSERVICE"]._serialized_start = 138
+  _globals["_ORDERSERVICE"]._serialized_end = 288
 # @@protoc_insertion_point(module_scope)

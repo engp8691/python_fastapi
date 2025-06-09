@@ -9,34 +9,34 @@ from google.protobuf import descriptor_pool as _descriptor_pool
 from google.protobuf import runtime_version as _runtime_version
 from google.protobuf import symbol_database as _symbol_database
 from google.protobuf.internal import builder as _builder
-_runtime_version.ValidateProtobufRuntimeVersion(
-    _runtime_version.Domain.PUBLIC,
-    6,
-    30,
-    0,
-    '',
-    'common.proto'
-)
+
+_runtime_version.ValidateProtobufRuntimeVersion(_runtime_version.Domain.PUBLIC, 6, 30, 0, "", "common.proto")
 # @@protoc_insertion_point(imports)
 
 _sym_db = _symbol_database.Default()
 
 
-
-
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0c\x63ommon.proto\x12\x10\x65\x63ommerce.common\"2\n\x07Product\x12\n\n\x02id\x18\x01 \x01(\t\x12\x0c\n\x04name\x18\x02 \x01(\t\x12\r\n\x05price\x18\x03 \x01(\x02\"/\n\x04User\x12\n\n\x02id\x18\x01 \x01(\t\x12\x0c\n\x04name\x18\x02 \x01(\t\x12\r\n\x05\x65mail\x18\x03 \x01(\t\"U\n\tOrderItem\x12\n\n\x02id\x18\x01 \x01(\t\x12*\n\x07product\x18\x02 \x01(\x0b\x32\x19.ecommerce.common.Product\x12\x10\n\x08quantity\x18\x03 \x01(\x05\"z\n\x05Order\x12\n\n\x02id\x18\x01 \x01(\t\x12$\n\x04user\x18\x02 \x01(\x0b\x32\x16.ecommerce.common.User\x12*\n\x05items\x18\x03 \x03(\x0b\x32\x1b.ecommerce.common.OrderItem\x12\x13\n\x0btotal_price\x18\x04 \x01(\x02\x62\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(
+  b'\n\x0c\x63ommon.proto\x12\x10\x65\x63ommerce.common"/\n\x04User\x12\n\n\x02id\x18\x01 \x01(\t\x12\x0c\n\x04name\x18\x02 \x01(\t\x12\r\n\x05\x65mail\x18\x03 \x01(\t"D\n\x07Product\x12\n\n\x02id\x18\x01 \x01(\t\x12\x0c\n\x04name\x18\x02 \x01(\t\x12\r\n\x05price\x18\x03 \x01(\x01\x12\x10\n\x08\x63\x61tegory\x18\x04 \x01(\t"^\n\x05Order\x12\n\n\x02id\x18\x01 \x01(\t\x12\x0f\n\x07user_id\x18\x02 \x01(\t\x12\x13\n\x0bproduct_ids\x18\x03 \x03(\t\x12\x13\n\x0btotal_price\x18\x04 \x01(\x01\x12\x0e\n\x06status\x18\x05 \x01(\t"5\n\rInventoryItem\x12\x12\n\nproduct_id\x18\x01 \x01(\t\x12\x10\n\x08quantity\x18\x02 \x01(\x05"I\n\x0fInventoryStatus\x12\x11\n\tproductId\x18\x01 \x01(\t\x12\x11\n\tavailable\x18\x02 \x01(\x08\x12\x10\n\x08quantity\x18\x03 \x01(\x05"H\n\rPaymentResult\x12\x0f\n\x07success\x18\x01 \x01(\x08\x12\x15\n\rtransactionId\x18\x02 \x01(\t\x12\x0f\n\x07message\x18\x03 \x01(\t"C\n\x16UpdateInventoryRequest\x12\x11\n\tproductId\x18\x01 \x01(\t\x12\x16\n\x0equantityChange\x18\x02 \x01(\x05\x62\x06proto3'
+)
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
-_builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'common_pb2', _globals)
+_builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, "common_pb2", _globals)
 if not _descriptor._USE_C_DESCRIPTORS:
   DESCRIPTOR._loaded_options = None
-  _globals['_PRODUCT']._serialized_start=34
-  _globals['_PRODUCT']._serialized_end=84
-  _globals['_USER']._serialized_start=86
-  _globals['_USER']._serialized_end=133
-  _globals['_ORDERITEM']._serialized_start=135
-  _globals['_ORDERITEM']._serialized_end=220
-  _globals['_ORDER']._serialized_start=222
-  _globals['_ORDER']._serialized_end=344
+  _globals["_USER"]._serialized_start = 34
+  _globals["_USER"]._serialized_end = 81
+  _globals["_PRODUCT"]._serialized_start = 83
+  _globals["_PRODUCT"]._serialized_end = 151
+  _globals["_ORDER"]._serialized_start = 153
+  _globals["_ORDER"]._serialized_end = 247
+  _globals["_INVENTORYITEM"]._serialized_start = 249
+  _globals["_INVENTORYITEM"]._serialized_end = 302
+  _globals["_INVENTORYSTATUS"]._serialized_start = 304
+  _globals["_INVENTORYSTATUS"]._serialized_end = 377
+  _globals["_PAYMENTRESULT"]._serialized_start = 379
+  _globals["_PAYMENTRESULT"]._serialized_end = 451
+  _globals["_UPDATEINVENTORYREQUEST"]._serialized_start = 453
+  _globals["_UPDATEINVENTORYREQUEST"]._serialized_end = 520
 # @@protoc_insertion_point(module_scope)

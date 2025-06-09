@@ -3,7 +3,7 @@
 import grpc
 import warnings
 
-from . import greeter_pb2 as greeter__pb2
+from . import echo_pb2 as echo__pb2
 
 GRPC_GENERATED_VERSION = "1.72.1"
 GRPC_VERSION = grpc.__version__
@@ -21,7 +21,7 @@ except ImportError:
 if _version_not_supported:
   raise RuntimeError(
       f"The grpc package installed is at version {GRPC_VERSION},"
-      + f" but the generated code in greeter_pb2_grpc.py depends on"
+      + f" but the generated code in echo_pb2_grpc.py depends on"
       + f" grpcio>={GRPC_GENERATED_VERSION}."
       + f" Please upgrade your grpc module to grpcio>={GRPC_GENERATED_VERSION}"
       +
@@ -29,7 +29,7 @@ if _version_not_supported:
   )
 
 
-class GreeterStub(object):
+class EchoServiceStub(object):
   """Missing associated documentation comment in .proto file."""
 
   def __init__(self, channel):
@@ -38,46 +38,46 @@ class GreeterStub(object):
     Args:
         channel: A grpc.Channel.
     """
-    self.SayHello = channel.unary_unary(
-        "/greeter.Greeter/SayHello",
-        request_serializer=greeter__pb2.HelloRequest.SerializeToString,
-        response_deserializer=greeter__pb2.HelloReply.FromString,
+    self.Echo = channel.unary_unary(
+        "/echo.EchoService/Echo",
+        request_serializer=echo__pb2.EchoRequest.SerializeToString,
+        response_deserializer=echo__pb2.EchoResponse.FromString,
         _registered_method=True,
     )
 
 
-class GreeterServicer(object):
+class EchoServiceServicer(object):
   """Missing associated documentation comment in .proto file."""
 
-  def SayHello(self, request, context):
+  def Echo(self, request, context):
     """Missing associated documentation comment in .proto file."""
     context.set_code(grpc.StatusCode.UNIMPLEMENTED)
     context.set_details("Method not implemented!")
     raise NotImplementedError("Method not implemented!")
 
 
-def add_GreeterServicer_to_server(servicer, server):
+def add_EchoServiceServicer_to_server(servicer, server):
   rpc_method_handlers = {
-      "SayHello": grpc.unary_unary_rpc_method_handler(
-          servicer.SayHello,
-          request_deserializer=greeter__pb2.HelloRequest.FromString,
-          response_serializer=greeter__pb2.HelloReply.SerializeToString,
+      "Echo": grpc.unary_unary_rpc_method_handler(
+          servicer.Echo,
+          request_deserializer=echo__pb2.EchoRequest.FromString,
+          response_serializer=echo__pb2.EchoResponse.SerializeToString,
       ),
   }
   generic_handler = grpc.method_handlers_generic_handler(
-      "greeter.Greeter", rpc_method_handlers
+      "echo.EchoService", rpc_method_handlers
   )
   server.add_generic_rpc_handlers((generic_handler,))
   server.add_registered_method_handlers(
-      "greeter.Greeter", rpc_method_handlers)
+      "echo.EchoService", rpc_method_handlers)
 
 
 # This class is part of an EXPERIMENTAL API.
-class Greeter(object):
+class EchoService(object):
   """Missing associated documentation comment in .proto file."""
 
   @staticmethod
-  def SayHello(
+  def Echo(
       request,
       target,
       options=(),
@@ -92,9 +92,9 @@ class Greeter(object):
     return grpc.experimental.unary_unary(
         request,
         target,
-        "/greeter.Greeter/SayHello",
-        greeter__pb2.HelloRequest.SerializeToString,
-        greeter__pb2.HelloReply.FromString,
+        "/echo.EchoService/Echo",
+        echo__pb2.EchoRequest.SerializeToString,
+        echo__pb2.EchoResponse.FromString,
         options,
         channel_credentials,
         insecure,

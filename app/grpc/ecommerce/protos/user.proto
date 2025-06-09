@@ -1,12 +1,19 @@
 syntax = "proto3";
+
 package ecommerce;
 
 import "common.proto";
 
 service UserService {
   rpc GetUser(GetUserRequest) returns (ecommerce.common.User);
+  rpc CreateUser(CreateUserRequest) returns (ecommerce.common.User);
 }
 
 message GetUserRequest {
   string user_id = 1;
+}
+
+message CreateUserRequest {
+  string name = 1;
+  string email = 2;
 }

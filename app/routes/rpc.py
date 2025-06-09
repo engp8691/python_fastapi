@@ -37,8 +37,6 @@ def get_greeting(name: str = "Yonglin") -> str:
         user_dict = MessageToDict(response)
         result["user"] = user_dict
 
-        print(result)
-
         return result
 
 @router.get("/rpc/greeting")

@@ -1,10 +1,17 @@
 syntax = "proto3";
+
 package ecommerce;
 
 import "common.proto";
 
 service OrderService {
+  rpc CreateOrder(CreateOrderRequest) returns (ecommerce.common.Order);
   rpc GetOrder(GetOrderRequest) returns (ecommerce.common.Order);
+}
+
+message CreateOrderRequest {
+  string user_id = 1;
+  repeated string product_ids = 2;
 }
 
 message GetOrderRequest {

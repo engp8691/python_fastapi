@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+package ecommerce;
+
+import "common.proto";
+
+service InventoryService {
+  rpc CheckInventory(CheckInventoryRequest) returns (CheckInventoryResponse);
+  rpc UpdateInventory(UpdateInventoryRequest) returns (UpdateInventoryResponse);
+}
+
+message CheckInventoryRequest {
+  repeated string product_ids = 1;
+}
+
+message CheckInventoryResponse {
+  repeated ecommerce.common.InventoryItem items = 1;
+}
+
+message UpdateInventoryRequest {
+  repeated InventoryUpdate updates = 1;
+}
+
+message InventoryUpdate {
+  string product_id = 1;
+  int32 delta = 2; // positive to add, negative to subtract
+}
+
+message UpdateInventoryResponse {
+  bool success = 1;
+}
