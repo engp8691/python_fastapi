@@ -3,7 +3,7 @@
 import grpc
 import warnings
 
-from . import greeter_pb2 as greeter__pb2
+from . import payment_pb2 as payment__pb2
 
 GRPC_GENERATED_VERSION = "1.72.1"
 GRPC_VERSION = grpc.__version__
@@ -21,7 +21,7 @@ except ImportError:
 if _version_not_supported:
   raise RuntimeError(
       f"The grpc package installed is at version {GRPC_VERSION},"
-      + f" but the generated code in greeter_pb2_grpc.py depends on"
+      + f" but the generated code in payment_pb2_grpc.py depends on"
       + f" grpcio>={GRPC_GENERATED_VERSION}."
       + f" Please upgrade your grpc module to grpcio>={GRPC_GENERATED_VERSION}"
       +
@@ -29,7 +29,7 @@ if _version_not_supported:
   )
 
 
-class GreeterStub(object):
+class PaymentServiceStub(object):
   """Missing associated documentation comment in .proto file."""
 
   def __init__(self, channel):
@@ -38,46 +38,47 @@ class GreeterStub(object):
     Args:
         channel: A grpc.Channel.
     """
-    self.SayHello = channel.unary_unary(
-        "/greeter.Greeter/SayHello",
-        request_serializer=greeter__pb2.HelloRequest.SerializeToString,
-        response_deserializer=greeter__pb2.HelloReply.FromString,
+    self.ProcessPayment = channel.unary_unary(
+        "/ecommerce.PaymentService/ProcessPayment",
+        request_serializer=payment__pb2.ProcessPaymentRequest.SerializeToString,
+        response_deserializer=payment__pb2.ProcessPaymentResponse.FromString,
         _registered_method=True,
     )
 
 
-class GreeterServicer(object):
+class PaymentServiceServicer(object):
   """Missing associated documentation comment in .proto file."""
 
-  def SayHello(self, request, context):
+  def ProcessPayment(self, request, context):
     """Missing associated documentation comment in .proto file."""
     context.set_code(grpc.StatusCode.UNIMPLEMENTED)
     context.set_details("Method not implemented!")
     raise NotImplementedError("Method not implemented!")
 
 
-def add_GreeterServicer_to_server(servicer, server):
+def add_PaymentServiceServicer_to_server(servicer, server):
   rpc_method_handlers = {
-      "SayHello": grpc.unary_unary_rpc_method_handler(
-          servicer.SayHello,
-          request_deserializer=greeter__pb2.HelloRequest.FromString,
-          response_serializer=greeter__pb2.HelloReply.SerializeToString,
+      "ProcessPayment": grpc.unary_unary_rpc_method_handler(
+          servicer.ProcessPayment,
+          request_deserializer=payment__pb2.ProcessPaymentRequest.FromString,
+          response_serializer=payment__pb2.ProcessPaymentResponse.SerializeToString,
       ),
   }
   generic_handler = grpc.method_handlers_generic_handler(
-      "greeter.Greeter", rpc_method_handlers
+      "ecommerce.PaymentService", rpc_method_handlers
   )
   server.add_generic_rpc_handlers((generic_handler,))
   server.add_registered_method_handlers(
-      "greeter.Greeter", rpc_method_handlers)
+      "ecommerce.PaymentService", rpc_method_handlers
+  )
 
 
 # This class is part of an EXPERIMENTAL API.
-class Greeter(object):
+class PaymentService(object):
   """Missing associated documentation comment in .proto file."""
 
   @staticmethod
-  def SayHello(
+  def ProcessPayment(
       request,
       target,
       options=(),
@@ -92,9 +93,9 @@ class Greeter(object):
     return grpc.experimental.unary_unary(
         request,
         target,
-        "/greeter.Greeter/SayHello",
-        greeter__pb2.HelloRequest.SerializeToString,
-        greeter__pb2.HelloReply.FromString,
+        "/ecommerce.PaymentService/ProcessPayment",
+        payment__pb2.ProcessPaymentRequest.SerializeToString,
+        payment__pb2.ProcessPaymentResponse.FromString,
         options,
         channel_credentials,
         insecure,

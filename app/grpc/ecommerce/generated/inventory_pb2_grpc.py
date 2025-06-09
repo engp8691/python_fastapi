@@ -3,8 +3,7 @@
 import grpc
 import warnings
 
-from . import common_pb2 as common__pb2
-from . import order_pb2 as order__pb2
+from . import inventory_pb2 as inventory__pb2
 
 GRPC_GENERATED_VERSION = "1.72.1"
 GRPC_VERSION = grpc.__version__
@@ -22,7 +21,7 @@ except ImportError:
 if _version_not_supported:
   raise RuntimeError(
       f"The grpc package installed is at version {GRPC_VERSION},"
-      + f" but the generated code in order_pb2_grpc.py depends on"
+      + f" but the generated code in inventory_pb2_grpc.py depends on"
       + f" grpcio>={GRPC_GENERATED_VERSION}."
       + f" Please upgrade your grpc module to grpcio>={GRPC_GENERATED_VERSION}"
       +
@@ -30,7 +29,7 @@ if _version_not_supported:
   )
 
 
-class OrderServiceStub(object):
+class InventoryServiceStub(object):
   """Missing associated documentation comment in .proto file."""
 
   def __init__(self, channel):
@@ -39,63 +38,64 @@ class OrderServiceStub(object):
     Args:
         channel: A grpc.Channel.
     """
-    self.CreateOrder = channel.unary_unary(
-        "/ecommerce.OrderService/CreateOrder",
-        request_serializer=order__pb2.CreateOrderRequest.SerializeToString,
-        response_deserializer=common__pb2.Order.FromString,
+    self.CheckInventory = channel.unary_unary(
+        "/ecommerce.InventoryService/CheckInventory",
+        request_serializer=inventory__pb2.CheckInventoryRequest.SerializeToString,
+        response_deserializer=inventory__pb2.CheckInventoryResponse.FromString,
         _registered_method=True,
     )
-    self.GetOrder = channel.unary_unary(
-        "/ecommerce.OrderService/GetOrder",
-        request_serializer=order__pb2.GetOrderRequest.SerializeToString,
-        response_deserializer=common__pb2.Order.FromString,
+    self.UpdateInventory = channel.unary_unary(
+        "/ecommerce.InventoryService/UpdateInventory",
+        request_serializer=inventory__pb2.UpdateInventoryRequest.SerializeToString,
+        response_deserializer=inventory__pb2.UpdateInventoryResponse.FromString,
         _registered_method=True,
     )
 
 
-class OrderServiceServicer(object):
+class InventoryServiceServicer(object):
   """Missing associated documentation comment in .proto file."""
 
-  def CreateOrder(self, request, context):
+  def CheckInventory(self, request, context):
     """Missing associated documentation comment in .proto file."""
     context.set_code(grpc.StatusCode.UNIMPLEMENTED)
     context.set_details("Method not implemented!")
     raise NotImplementedError("Method not implemented!")
 
-  def GetOrder(self, request, context):
+  def UpdateInventory(self, request, context):
     """Missing associated documentation comment in .proto file."""
     context.set_code(grpc.StatusCode.UNIMPLEMENTED)
     context.set_details("Method not implemented!")
     raise NotImplementedError("Method not implemented!")
 
 
-def add_OrderServiceServicer_to_server(servicer, server):
+def add_InventoryServiceServicer_to_server(servicer, server):
   rpc_method_handlers = {
-      "CreateOrder": grpc.unary_unary_rpc_method_handler(
-          servicer.CreateOrder,
-          request_deserializer=order__pb2.CreateOrderRequest.FromString,
-          response_serializer=common__pb2.Order.SerializeToString,
+      "CheckInventory": grpc.unary_unary_rpc_method_handler(
+          servicer.CheckInventory,
+          request_deserializer=inventory__pb2.CheckInventoryRequest.FromString,
+          response_serializer=inventory__pb2.CheckInventoryResponse.SerializeToString,
       ),
-      "GetOrder": grpc.unary_unary_rpc_method_handler(
-          servicer.GetOrder,
-          request_deserializer=order__pb2.GetOrderRequest.FromString,
-          response_serializer=common__pb2.Order.SerializeToString,
+      "UpdateInventory": grpc.unary_unary_rpc_method_handler(
+          servicer.UpdateInventory,
+          request_deserializer=inventory__pb2.UpdateInventoryRequest.FromString,
+          response_serializer=inventory__pb2.UpdateInventoryResponse.SerializeToString,
       ),
   }
   generic_handler = grpc.method_handlers_generic_handler(
-      "ecommerce.OrderService", rpc_method_handlers
+      "ecommerce.InventoryService", rpc_method_handlers
   )
   server.add_generic_rpc_handlers((generic_handler,))
   server.add_registered_method_handlers(
-      "ecommerce.OrderService", rpc_method_handlers)
+      "ecommerce.InventoryService", rpc_method_handlers
+  )
 
 
 # This class is part of an EXPERIMENTAL API.
-class OrderService(object):
+class InventoryService(object):
   """Missing associated documentation comment in .proto file."""
 
   @staticmethod
-  def CreateOrder(
+  def CheckInventory(
       request,
       target,
       options=(),
@@ -110,9 +110,9 @@ class OrderService(object):
     return grpc.experimental.unary_unary(
         request,
         target,
-        "/ecommerce.OrderService/CreateOrder",
-        order__pb2.CreateOrderRequest.SerializeToString,
-        common__pb2.Order.FromString,
+        "/ecommerce.InventoryService/CheckInventory",
+        inventory__pb2.CheckInventoryRequest.SerializeToString,
+        inventory__pb2.CheckInventoryResponse.FromString,
         options,
         channel_credentials,
         insecure,
@@ -125,7 +125,7 @@ class OrderService(object):
     )
 
   @staticmethod
-  def GetOrder(
+  def UpdateInventory(
       request,
       target,
       options=(),
@@ -140,9 +140,9 @@ class OrderService(object):
     return grpc.experimental.unary_unary(
         request,
         target,
-        "/ecommerce.OrderService/GetOrder",
-        order__pb2.GetOrderRequest.SerializeToString,
-        common__pb2.Order.FromString,
+        "/ecommerce.InventoryService/UpdateInventory",
+        inventory__pb2.UpdateInventoryRequest.SerializeToString,
+        inventory__pb2.UpdateInventoryResponse.FromString,
         options,
         channel_credentials,
         insecure,

@@ -6,93 +6,150 @@ import warnings
 from . import common_pb2 as common__pb2
 from . import user_pb2 as user__pb2
 
-GRPC_GENERATED_VERSION = '1.72.1'
+GRPC_GENERATED_VERSION = "1.72.1"
 GRPC_VERSION = grpc.__version__
 _version_not_supported = False
 
 try:
-    from grpc._utilities import first_version_is_lower
-    _version_not_supported = first_version_is_lower(GRPC_VERSION, GRPC_GENERATED_VERSION)
+  from grpc._utilities import first_version_is_lower
+
+  _version_not_supported = first_version_is_lower(
+      GRPC_VERSION, GRPC_GENERATED_VERSION
+  )
 except ImportError:
-    _version_not_supported = True
+  _version_not_supported = True
 
 if _version_not_supported:
-    raise RuntimeError(
-        f'The grpc package installed is at version {GRPC_VERSION},'
-        + f' but the generated code in user_pb2_grpc.py depends on'
-        + f' grpcio>={GRPC_GENERATED_VERSION}.'
-        + f' Please upgrade your grpc module to grpcio>={GRPC_GENERATED_VERSION}'
-        + f' or downgrade your generated code using grpcio-tools<={GRPC_VERSION}.'
-    )
+  raise RuntimeError(
+      f"The grpc package installed is at version {GRPC_VERSION},"
+      + f" but the generated code in user_pb2_grpc.py depends on"
+      + f" grpcio>={GRPC_GENERATED_VERSION}."
+      + f" Please upgrade your grpc module to grpcio>={GRPC_GENERATED_VERSION}"
+      +
+      f" or downgrade your generated code using grpcio-tools<={GRPC_VERSION}."
+  )
 
 
 class UserServiceStub(object):
-    """Missing associated documentation comment in .proto file."""
+  """Missing associated documentation comment in .proto file."""
 
-    def __init__(self, channel):
-        """Constructor.
+  def __init__(self, channel):
+    """Constructor.
 
-        Args:
-            channel: A grpc.Channel.
-        """
-        self.GetUser = channel.unary_unary(
-                '/ecommerce.UserService/GetUser',
-                request_serializer=user__pb2.GetUserRequest.SerializeToString,
-                response_deserializer=common__pb2.User.FromString,
-                _registered_method=True)
+    Args:
+        channel: A grpc.Channel.
+    """
+    self.GetUser = channel.unary_unary(
+        "/ecommerce.UserService/GetUser",
+        request_serializer=user__pb2.GetUserRequest.SerializeToString,
+        response_deserializer=common__pb2.User.FromString,
+        _registered_method=True,
+    )
+    self.CreateUser = channel.unary_unary(
+        "/ecommerce.UserService/CreateUser",
+        request_serializer=user__pb2.CreateUserRequest.SerializeToString,
+        response_deserializer=common__pb2.User.FromString,
+        _registered_method=True,
+    )
 
 
 class UserServiceServicer(object):
-    """Missing associated documentation comment in .proto file."""
+  """Missing associated documentation comment in .proto file."""
 
-    def GetUser(self, request, context):
-        """Missing associated documentation comment in .proto file."""
-        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details('Method not implemented!')
-        raise NotImplementedError('Method not implemented!')
+  def GetUser(self, request, context):
+    """Missing associated documentation comment in .proto file."""
+    context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+    context.set_details("Method not implemented!")
+    raise NotImplementedError("Method not implemented!")
+
+  def CreateUser(self, request, context):
+    """Missing associated documentation comment in .proto file."""
+    context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+    context.set_details("Method not implemented!")
+    raise NotImplementedError("Method not implemented!")
 
 
 def add_UserServiceServicer_to_server(servicer, server):
-    rpc_method_handlers = {
-            'GetUser': grpc.unary_unary_rpc_method_handler(
-                    servicer.GetUser,
-                    request_deserializer=user__pb2.GetUserRequest.FromString,
-                    response_serializer=common__pb2.User.SerializeToString,
-            ),
-    }
-    generic_handler = grpc.method_handlers_generic_handler(
-            'ecommerce.UserService', rpc_method_handlers)
-    server.add_generic_rpc_handlers((generic_handler,))
-    server.add_registered_method_handlers('ecommerce.UserService', rpc_method_handlers)
+  rpc_method_handlers = {
+      "GetUser": grpc.unary_unary_rpc_method_handler(
+          servicer.GetUser,
+          request_deserializer=user__pb2.GetUserRequest.FromString,
+          response_serializer=common__pb2.User.SerializeToString,
+      ),
+      "CreateUser": grpc.unary_unary_rpc_method_handler(
+          servicer.CreateUser,
+          request_deserializer=user__pb2.CreateUserRequest.FromString,
+          response_serializer=common__pb2.User.SerializeToString,
+      ),
+  }
+  generic_handler = grpc.method_handlers_generic_handler(
+      "ecommerce.UserService", rpc_method_handlers
+  )
+  server.add_generic_rpc_handlers((generic_handler,))
+  server.add_registered_method_handlers(
+      "ecommerce.UserService", rpc_method_handlers)
 
 
- # This class is part of an EXPERIMENTAL API.
+# This class is part of an EXPERIMENTAL API.
 class UserService(object):
-    """Missing associated documentation comment in .proto file."""
+  """Missing associated documentation comment in .proto file."""
 
-    @staticmethod
-    def GetUser(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(
-            request,
-            target,
-            '/ecommerce.UserService/GetUser',
-            user__pb2.GetUserRequest.SerializeToString,
-            common__pb2.User.FromString,
-            options,
-            channel_credentials,
-            insecure,
-            call_credentials,
-            compression,
-            wait_for_ready,
-            timeout,
-            metadata,
-            _registered_method=True)
+  @staticmethod
+  def GetUser(
+      request,
+      target,
+      options=(),
+      channel_credentials=None,
+      call_credentials=None,
+      insecure=False,
+      compression=None,
+      wait_for_ready=None,
+      timeout=None,
+      metadata=None,
+  ):
+    return grpc.experimental.unary_unary(
+        request,
+        target,
+        "/ecommerce.UserService/GetUser",
+        user__pb2.GetUserRequest.SerializeToString,
+        common__pb2.User.FromString,
+        options,
+        channel_credentials,
+        insecure,
+        call_credentials,
+        compression,
+        wait_for_ready,
+        timeout,
+        metadata,
+        _registered_method=True,
+    )
+
+  @staticmethod
+  def CreateUser(
+      request,
+      target,
+      options=(),
+      channel_credentials=None,
+      call_credentials=None,
+      insecure=False,
+      compression=None,
+      wait_for_ready=None,
+      timeout=None,
+      metadata=None,
+  ):
+    return grpc.experimental.unary_unary(
+        request,
+        target,
+        "/ecommerce.UserService/CreateUser",
+        user__pb2.CreateUserRequest.SerializeToString,
+        common__pb2.User.FromString,
+        options,
+        channel_credentials,
+        insecure,
+        call_credentials,
+        compression,
+        wait_for_ready,
+        timeout,
+        metadata,
+        _registered_method=True,
+    )

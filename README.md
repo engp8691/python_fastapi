@@ -49,9 +49,11 @@ Follow the following steps and run the script to create the DB and tables.
 - 3: access it in the browser as `http://127.0.0.1:8000/rpc/greeting?name=YonglinLee`
 
 ### Test the server and the clients
-<!-- - python -m grpc_tools.protoc -Iapp/grpc/ecommerce/protos --python_out=app/grpc/ecommerce/generated --grpc_python_out=app/grpc/ecommerce/generated app/grpc/ecommerce/protos/common.proto app/grpc/ecommerce/protos/user.proto app/grpc/ecommerce/protos/order.proto app/grpc/ecommerce/protos/product.proto
+<!--
+python -m grpc_tools.protoc -Iapp/grpc/ecommerce/protos --python_out=app/grpc/ecommerce/generated --grpc_python_out=app/grpc/ecommerce/generated app/grpc/ecommerce/protos/common.proto app/grpc/ecommerce/protos/user.proto app/grpc/ecommerce/protos/order.proto app/grpc/ecommerce/protos/product.proto
 
-find app/grpc/ecommerce/generated -type f -name "*.py" -exec sed -i '' -E 's/^import (.*_pb2)/from . import \1/' {} \; -->
+find app/grpc/ecommerce/generated -type f -name "*.py" -exec sed -i '' -E 's/^import (.*_pb2)/from . import \1/' {} \;
+-->
 
 **_NOTE:_** After step 7 starts fastapi app, test all the clients. If step 7 is not started, start the server
 

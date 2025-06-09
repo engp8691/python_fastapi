@@ -1,12 +1,22 @@
 syntax = "proto3";
+
 package ecommerce;
 
 import "common.proto";
 
 service ProductService {
   rpc GetProduct(GetProductRequest) returns (ecommerce.common.Product);
+  rpc ListProducts(ListProductsRequest) returns (ListProductsResponse);
 }
 
 message GetProductRequest {
   string product_id = 1;
+}
+
+message ListProductsRequest {
+  string category = 1;
+}
+
+message ListProductsResponse {
+  repeated ecommerce.common.Product products = 1;
 }

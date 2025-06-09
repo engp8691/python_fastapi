@@ -4,36 +4,36 @@
 # source: product.proto
 # Protobuf Python Version: 6.30.0
 """Generated protocol buffer code."""
+from . import common_pb2 as common__pb2
 from google.protobuf import descriptor as _descriptor
 from google.protobuf import descriptor_pool as _descriptor_pool
 from google.protobuf import runtime_version as _runtime_version
 from google.protobuf import symbol_database as _symbol_database
 from google.protobuf.internal import builder as _builder
+
 _runtime_version.ValidateProtobufRuntimeVersion(
-    _runtime_version.Domain.PUBLIC,
-    6,
-    30,
-    0,
-    '',
-    'product.proto'
+    _runtime_version.Domain.PUBLIC, 6, 30, 0, "", "product.proto"
 )
 # @@protoc_insertion_point(imports)
 
 _sym_db = _symbol_database.Default()
 
 
-from . import common_pb2 as common__pb2
-
-
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\rproduct.proto\x12\tecommerce\x1a\x0c\x63ommon.proto\"\'\n\x11GetProductRequest\x12\x12\n\nproduct_id\x18\x01 \x01(\t2W\n\x0eProductService\x12\x45\n\nGetProduct\x12\x1c.ecommerce.GetProductRequest\x1a\x19.ecommerce.common.Productb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(
+    b'\n\rproduct.proto\x12\tecommerce\x1a\x0c\x63ommon.proto"\'\n\x11GetProductRequest\x12\x12\n\nproduct_id\x18\x01 \x01(\t"\'\n\x13ListProductsRequest\x12\x10\n\x08\x63\x61tegory\x18\x01 \x01(\t"C\n\x14ListProductsResponse\x12+\n\x08products\x18\x01 \x03(\x0b\x32\x19.ecommerce.common.Product2\xa8\x01\n\x0eProductService\x12\x45\n\nGetProduct\x12\x1c.ecommerce.GetProductRequest\x1a\x19.ecommerce.common.Product\x12O\n\x0cListProducts\x12\x1e.ecommerce.ListProductsRequest\x1a\x1f.ecommerce.ListProductsResponseb\x06proto3'
+)
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
-_builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'product_pb2', _globals)
+_builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, "product_pb2", _globals)
 if not _descriptor._USE_C_DESCRIPTORS:
   DESCRIPTOR._loaded_options = None
-  _globals['_GETPRODUCTREQUEST']._serialized_start=42
-  _globals['_GETPRODUCTREQUEST']._serialized_end=81
-  _globals['_PRODUCTSERVICE']._serialized_start=83
-  _globals['_PRODUCTSERVICE']._serialized_end=170
+  _globals["_GETPRODUCTREQUEST"]._serialized_start = 42
+  _globals["_GETPRODUCTREQUEST"]._serialized_end = 81
+  _globals["_LISTPRODUCTSREQUEST"]._serialized_start = 83
+  _globals["_LISTPRODUCTSREQUEST"]._serialized_end = 122
+  _globals["_LISTPRODUCTSRESPONSE"]._serialized_start = 124
+  _globals["_LISTPRODUCTSRESPONSE"]._serialized_end = 191
+  _globals["_PRODUCTSERVICE"]._serialized_start = 194
+  _globals["_PRODUCTSERVICE"]._serialized_end = 362
 # @@protoc_insertion_point(module_scope)
