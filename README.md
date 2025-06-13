@@ -85,5 +85,6 @@ python -m app.grpc.chat_room.server
 ```
 
 ```sh
-python -m app.grpc.chat_room.greeting
+python -m app.grpc.chat_room.greeting Yonglin
+python -m app.grpc.chat_room.greeting Alice
 ```
