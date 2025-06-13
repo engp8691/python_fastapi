@@ -67,3 +67,23 @@ test all the clients:
 - 2: python -m app.grpc.ecommerce.order_client
 - 3: python -m app.grpc.ecommerce.product_client
 - 4: python -m app.grpc.ecommerce.user_client
+
+## Chat room
+
+### At the root folder of `fastapi_python` run
+
+```sh
+python -m grpc_tools.protoc -Iapp/grpc/chat_room/protos --python_out=app/grpc/chat_room/generated --grpc_python_out=app/grpc/chat_room/generated app/grpc/chat_room/protos/chat.proto
+```
+
+```sh
+find app/grpc/chat_room/generated -type f -name "*.py" -exec sed -i '' -E 's/^import (.*_pb2)/from . import \1/' {} \;
+```
+
+```sh
+python -m app.grpc.chat_room.server
+```
+
+```sh
+python -m app.grpc.chat_room.greeting
+```
