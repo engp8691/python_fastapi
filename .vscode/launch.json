@@ -1,0 +1,27 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug: FastAPI with Uvicorn",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "uvicorn",
+      "args": [
+        "app.main:app",
+        "--host", "127.0.0.1",
+        "--port", "8000"
+        // No --reload, because subprocesses break debugging
+      ],
+      "jinja": true, // Safely remove this if not using Jinja templates
+      "justMyCode": true,
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "Python: Run playground/exercises.py",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/playground/exercises.py",
+      "console": "integratedTerminal"
+    }
+  ]
+}

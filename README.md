@@ -88,3 +88,41 @@ python -m app.grpc.chat_room.server
 python -m app.grpc.chat_room.greeting Yonglin
 python -m app.grpc.chat_room.greeting Alice
 ```
+
+## Setup debug with one launch.json file
+
+- Step 1: Shift + Ctrl + P: -> "Python: Select interpreter" -> "/Users/yonglinli/repo/python/venv/bin/python"
+
+- Step 2: Make the launch.json file with multiple options
+
+```json
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug: FastAPI with Uvicorn",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "uvicorn",
+      "args": [
+        "app.main:app",
+        "--host", "127.0.0.1",
+        "--port", "8000"
+        // No --reload, because subprocesses break debugging
+      ],
+      "jinja": true, // Safely remove this if not using Jinja templates
+      "justMyCode": true,
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "Python: Run playground/exercises.py",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/playground/exercises.py",
+      "console": "integratedTerminal"
+    }
+  ]
+}
+```
+
+- Step 3: Shift + Ctrl + D to open the debug panel and choose the option to start
