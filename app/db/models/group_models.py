@@ -11,10 +11,14 @@ from sqlalchemy import (
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 from sqlalchemy.dialects.postgresql import UUID
 
-class Base(DeclarativeBase):
+# Make sure your GroupVisibility is defined/imported correctly
+# from your_module import GroupVisibility
+
+class BaseModel(DeclarativeBase):
     pass
 
-class TestMeasurementGroup(Base):
+
+class TestMeasurementGroup(BaseModel):
     __test__ = False
     __tablename__ = "test_measurement_group"
     __table_args__ = (
@@ -27,7 +31,7 @@ class TestMeasurementGroup(Base):
     creation_user: Mapped[str] = mapped_column(String, nullable=False)
     creation_date: Mapped[date] = mapped_column(nullable=False)
     is_active: Mapped[bool] = mapped_column(Boolean, nullable=False)
-    visibility: Mapped[GroupVisibility] = mapped_column(Enum(GroupVisibility), nullable=False)
+    visibility: Mapped["GroupVisibility"] = mapped_column(nullable=False)  # Handle GroupVisibility properly
     updated_user: Mapped[Optional[str]] = mapped_column(String, nullable=True)
     updated_date: Mapped[Optional[date]] = mapped_column(nullable=True)
     usage_count: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
@@ -38,11 +42,12 @@ class TestMeasurementGroup(Base):
         cascade="all, delete-orphan"
     )
 
-class FilterValues(Base):
+
+class FilterValues(BaseModel):
     __test__ = False
     __tablename__ = "filter_values"
     __table_args__ = (
-        PrimaryKeyConstraint("id", "creation_date", name="pk_filter_values"),
+        PrimaryKeyConstraint("id", name="pk_filter_values"),
         ForeignKeyConstraint(
             ["test_measurement_group_id", "creation_date"],
             ["test_measurement_group.id", "test_measurement_group.creation_date"],
@@ -53,9 +58,12 @@ class FilterValues(Base):
     )
 
     id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), nullable=False)
-    test_measurement_group_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), nullable=False, index=True)
+    test_measurement_group_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), nullable=False, index=True
+    )
     creation_date: Mapped[date] = mapped_column(nullable=False)
     name: Mapped[str] = mapped_column(String, nullable=False)
+
     test_measurement_group: Mapped["TestMeasurementGroup"] = relationship(
         back_populates="filter_values"
     )

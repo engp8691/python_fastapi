@@ -1,3 +1,6 @@
+# ALLOWED_ORIGINS=http://localhost:3000,https://yourfrontend.com
+# DATABASE_URL=postgresql+asyncpg://cradl:cradl@localhost:5432/cradl
+# DATABASE_URL_SYNC=postgresql+psycopg2://cradl:cradl@localhost:5432/cradl
 # app/db/database.py
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import sessionmaker
