@@ -105,3 +105,27 @@ python -m app.grpc.chat_room.greeting Alice
 User.updated_test_measurement_group 0..1 <--> 1 TestMeasurementGroup.updated_user_obj
 User.created_test_measurement_group 1 <--> 1 TestMeasurementGroup.creation_user_obj
 TestMeasurementGroup.filter_values 1 <--> N FilterValues.test_measurement_group
+
+
+
+---
+digraph ER {
+  rankdir=LR
+  node [shape=record, fontname=Helvetica, fontsize=10];
+
+  User [label="{User|+ id : UUID\l+ firstname : string\l+ lastname : string\l+ role : string\l+ email : string\l}"];
+
+  TestMeasurementGroup [label="{TestMeasurementGroup|+ id : UUID\l+ creation_date : date\l+ name : string\l+ description : string?\l+ creation_user : UUID\l+ updated_user : UUID?\l+ is_active : bool\l+ visibility : string\l+ updated_date : date?\l+ usage_count : int?\l+ last_using_date : date?\l}"];
+
+  FilterValues [label="{FilterValues|+ id : UUID\l+ test_measurement_group_id : UUID\l+ creation_date : date\l+ name : string\l}"];
+
+  // Relationships with cardinalities
+  User -> TestMeasurementGroup [label="1 : 1\n(created_test_measurement_group)", arrowhead=none, style=solid];
+
+  User -> TestMeasurementGroup [label="1 : 1\n(updated_test_measurement_group)", arrowhead=none, style=dashed];
+
+  TestMeasurementGroup -> FilterValues [label="1 : N\n(filter_values)", arrowhead=normal];
+
+  // Composite foreign key from FilterValues to TestMeasurementGroup
+  FilterValues -> TestMeasurementGroup [label="fk_filter_values_test_measurement_group", style=dotted];
+}
