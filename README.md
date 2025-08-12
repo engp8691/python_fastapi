@@ -88,3 +88,20 @@ python -m app.grpc.chat_room.server
 python -m app.grpc.chat_room.greeting Yonglin
 python -m app.grpc.chat_room.greeting Alice
 ```
+
+
++-------------+         1         +-----------------------+         1         +-------------+
+|    User     |-------------------|  TestMeasurementGroup  |-------------------| FilterValues |
+|-------------| creation_user 1   |-----------------------| 1          N      |-------------|
+| id (PK)     |                   | id, creation_date (PK)|                   | id, creation_date (PK) |
+| firstname   |                   | name                  |                   | test_measurement_group_id (FK) |
+| lastname    |                   | description           |                   | creation_date |
+| role        |                   | creation_user (FK, 1:1)|                  | name        |
+| email       |                   | updated_user (FK, 0..1:1)                  |
++-------------+                   +-----------------------+                   +-------------+
+
+ (updated_user 0..1) 
+
+User.updated_test_measurement_group 0..1 <--> 1 TestMeasurementGroup.updated_user_obj
+User.created_test_measurement_group 1 <--> 1 TestMeasurementGroup.creation_user_obj
+TestMeasurementGroup.filter_values 1 <--> N FilterValues.test_measurement_group
